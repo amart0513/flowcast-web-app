@@ -1,4 +1,3 @@
-# ShellHacks 2024 - MLH Streamlit Challenge
 # FlowCast: Real-Time Water Monitoring and Prediction
 
 ## Overview
