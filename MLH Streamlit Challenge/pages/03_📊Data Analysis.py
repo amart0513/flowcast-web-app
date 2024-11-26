@@ -12,14 +12,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import learning_curve
 
-IMAGE_MLH = "media/MLH.png"
+IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
 
 with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
+    st.title("FlowCast: Sidebar")
 
 
     def load_media(column, file_path, caption):
@@ -223,7 +222,6 @@ def render_data():
         # Calculate metrics on filtered data
         mse = mean_squared_error(filtered_df['ODO mg/L'], predictions)
         r2 = r2_score(filtered_df['ODO mg/L'], predictions)
-
 
     # Visualization Tabs
     with Scatter_Plots_tab:

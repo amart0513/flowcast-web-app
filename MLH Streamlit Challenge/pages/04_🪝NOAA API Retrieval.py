@@ -3,15 +3,11 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 
-IMAGE_MLH = "media/MLH.png"
+IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
-
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
 
 
 def raw_data(df):

@@ -8,12 +8,8 @@ IMAGE_FIU = "media/FIU_LOGO.png"
 IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
-
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
 
 
 def load_media(column, file_path, caption):

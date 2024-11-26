@@ -1,11 +1,6 @@
 import streamlit as st
 
-
-IMAGE_MLH = "media/MLH.png"
 IMAGE_FIU_BANNER = "media/FIU_Banner.png"
-
-
-
 
 MAJORS = [
     "",  # Placeholder for an empty selection
@@ -57,14 +52,8 @@ MAJORS = [
     "Web Development"
 ]
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
-
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
-
-
 
 st.title('Sign Up to Learn More')
 st.write('Please enter your information below:')
@@ -84,6 +73,5 @@ with st.form("Registration", clear_on_submit=True):
     else:
         st.info("Please Fill out the form")
 st.divider()
-col5, col6, col7 = st.columns([1, 1, 1])
-with col6:
-    st.image(IMAGE_FIU_BANNER, width=200)
+# col5, col6, col7 = st.columns([1, 1, 1])
+

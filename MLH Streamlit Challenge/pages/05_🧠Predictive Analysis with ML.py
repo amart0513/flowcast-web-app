@@ -6,14 +6,11 @@ from joblib import load
 import os
 import seaborn as sns
 
-IMAGE_MLH = "media/MLH.png"
+IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast: Title", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
 
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
 
 
 def predict_water_quality(df):
@@ -53,6 +50,7 @@ def predict_water_quality(df):
             plt.clf()  # Clear the figure
 
             # Error Distribution
+            # calculating residuals...
             st.subheader("Error Distribution")
             errors = true_values - predictions
             plt.figure(figsize=(10, 6))
@@ -63,6 +61,8 @@ def predict_water_quality(df):
             plt.clf()  # Clear the figure
 
             # Line Plot
+            # suggestion: create a line with residuals, add more "info" into the graph to explain the differences in the
+            # water quality...
             st.subheader("Line Plot of Actual and Predicted ODO over Index")
             plt.figure(figsize=(10, 6))
             plt.plot(prediction_df.index, true_values, label='Actual ODO mg/L', color='blue')
@@ -90,3 +90,8 @@ if uploaded_file is not None:
 
 else:
     st.warning("Please upload a CSV file to get predictions.")
+
+
+
+# maybe create a way to just have sav files already in the system instead of user based interaction with the program
+# suggestion: randomize all csv files (maybe create dummy data)

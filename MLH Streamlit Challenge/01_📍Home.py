@@ -1,20 +1,10 @@
 import streamlit as st
 
-
-IMAGE_BANNER = "media/ShellHacksBanner.jpg"
 IMAGE_FIU_BANNER = "media/FIU_Banner.png"
-IMAGE_MLH = "media/MLH.png"
 
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
 
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
-
-
-
-st.image(IMAGE_BANNER, use_column_width=True)
 st.title("FlowCast: Real-Time Water Monitoring and Prediction")
 st.subheader("Home")
 # Project overview paragraph

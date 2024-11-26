@@ -1,19 +1,11 @@
 import streamlit as st
 
-
-IMAGE_MLH = "media/MLH.png"
 IMAGE1 = "media/boat1.jpg"
 IMAGE2 = "media/boat2.jpg"
-IMAGE_SH = "media/SH.png"
+IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 
-
-st.set_page_config(page_title="ShellHacks: MLH Streamlit Challenge", layout="wide",
+st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
-
-with st.sidebar:
-    st.image(IMAGE_MLH, use_column_width=True)
-    st.title("ShellHacks: MLH Streamlit Challenge")
-
 
 
 def render_background():
@@ -67,13 +59,7 @@ def render_background():
         st.image(IMAGE2, use_column_width=True)
 
     st.divider()
-    col5, col6, col7 = st.columns([1, 1, 1])
-
-    with col5:
-        st.image(IMAGE_MLH, width=200)
-    with col7:
-        st.image(IMAGE_SH, width=300)
-
+    # col5, col6, col7 = st.columns([1, 1, 1])
 
 
 render_background()
