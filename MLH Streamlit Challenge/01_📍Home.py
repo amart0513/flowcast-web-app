@@ -1,75 +1,267 @@
 import streamlit as st
 
-IMAGE_FIU_BANNER = "media/FIU_Banner.png"
+# Define images
+IMAGE1 = "media/boat1.jpg"
+IMAGE2 = "media/boat2.jpg"
 
-st.set_page_config(page_title="FlowCast", layout="wide",
-                   page_icon="🌊", initial_sidebar_state="expanded")
+# Page configuration
+st.set_page_config(
+    page_title="FlowCast",
+    layout="wide",
+    page_icon="🌊",
+    initial_sidebar_state="expanded",
+)
 
-st.title("FlowCast: Real-Time Water Monitoring and Prediction")
-st.subheader("Home")
-# Project overview paragraph
-st.write("As soon-to-graduate computer science students participating in ShellHacks 2024,\
- we were driven by a shared commitment to addressing one of the world’s most critical challenges—access\
-  to clean and safe water. The motivation behind developing a Streamlit website that leverages machine learning\
-   for water quality forecasting stems from this urgency. Clean water is fundamental not only to public health,\
-    but also to environmental preservation and sustainable economic development. However, many regions, both in \
-    developed and developing countries, struggle with monitoring and managing water resources effectively.")
+# Custom CSS for styling and animations
+st.markdown(
+    """
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            background-color: white;
+            padding: 20px 50px;
+            font-family: 'Arial', sans-serif;
+        }
+        .section-header {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            color: #005f73;
+        }
+        .divider {
+            border-top: 1px solid #ccc;
+            margin: 30px 0;
+        }
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 95, 115, 0.9), rgba(10, 147, 150, 0.9)), url('media/FIU_Banner.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            border-radius: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+            margin-bottom: 0; /* Removes the light gray gap */
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+        }
+        .button-container a {
+            text-decoration: none;
+        }
+        .button-container button {
+            margin: 0 10px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            color: white;
+            background-color: #0a9396;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: white;
+            color: #005f73;
+            transform: scale(1.05);
+        }
+        /* Cards */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        .card img {
+            border-radius: 15px;
+            width: 100%;
+        }
+        .card p {
+            margin-top: 10px;
+        }
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-st.write("Our project was designed to bridge this gap by creating a tool that empowers communities, local governments,\
- and environmental organizations with a real-time, user-friendly platform for forecasting water quality. With machine\
-  learning at its core, the website processes historical and real-time data to make accurate predictions about water safety,\
-   offering insights that can help prevent waterborne diseases, reduce pollution, and support long-term environmental sustainability efforts.")
+# Hero Section
+st.markdown(
+    """
+    <div class="hero-section">
+        <h1 class="hero-title">Welcome to FlowCast</h1>
+        <p class="hero-subtitle">
+            Real-time water quality insights powered by advanced machine learning.
+        </p>
+        <div class="button-container">
+            <a href="https://protectingfloridatogether.gov/water-quality-status-dashboard">
+                <button>Learn More</button>
+            </a>
+            <a href="https://www.noaa.gov/">
+                <button>NOAA Website</button>
+            </a>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-st.write("By building this solution, we hope to contribute to raising awareness about global water challenges while showcasing the potential\
- of modern technology in addressing them. Additionally, our project serves as a testament to the power of cross-disciplinary collaboration,\
-  where computer science, data analytics, and environmental science come together to make a tangible impact.")
+# Sidebar Custom CSS with Lighter Blue Background
+st.markdown(
+    """
+    <style>
+        /* Sidebar container */
+        [data-testid="stSidebar"] {
+            background-color: #b3dfe6; /* Lighter blue background */
+            color: white; /* Default text color */
+            padding: 20px;
+        }
 
-st.divider()
-st.subheader("Impact on Society")
-st.write("We are committed to leveraging technology to solve real-world problems, and water quality monitoring represents\
- a critical intersection between environmental sustainability and public health. By building a system that can not only predict\
-  potential contamination but also detect subtle changes in water quality, our goal is to empower communities, researchers, and policymakers\
-   with actionable insights. ")
+        /* Sidebar title */
+        [data-testid="stSidebar"] h1 {
+            font-size: 1.5rem;
+            color: #005f73; /* Darker blue for title */
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
 
-st.write("Our machine learning-driven platform serves as an accessible tool designed for a broad audience. Communities can use\
- it to monitor their local water sources and receive early warnings about potential hazards, such as bacterial contamination or\
-  harmful algal blooms. Researchers can benefit from real-time data and predictive analytics to better understand water quality\
-   trends over time. Policymakers, armed with this information, can make informed decisions to protect public health, ensure regulatory\
-    compliance, and take timely, proactive measures to safeguard water supplies.")
-st.write("Ultimately, our team aims to create a system that bridges the gap between complex environmental data and everyday users, making\
- it easier for people to engage with water quality issues and take preventive action to ensure safe, clean water for all.")
+        /* Sidebar widget labels */
+        [data-testid="stSidebar"] label {
+            font-size: 1rem;
+            color: #005f73; /* Darker blue for labels */
+            margin-bottom: 8px;
+        }
 
-# Data collection and analysis paragraph
-st.divider()
-st.subheader("Machine Learning and Innovation")
-st.write("This hackathon provides the ideal platform to experiment with machine learning models in a real-world, impactful\
- context. By working with water quality data—such as pH levels, dissolved oxygen, contaminants, temperature, and more—we are\
-  able to apply our technical knowledge to address a pressing global issue. Through careful analysis of both historical data and\
-   real-time inputs, we aim to build a model that predicts future water quality trends with high accuracy. This predictive capability\
-    could help in identifying potential hazards early on, such as contamination or the onset of harmful algal blooms.")
+        /* Sidebar buttons */
+        [data-testid="stSidebar"] button {
+            background-color: #0a9396;
+            color: white; /* Button text color */
+            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
 
-st.write("Additionally, this project gives us the chance to bridge theory with practice by applying what we've learned\
- in data science and machine learning to a problem that has profound implications for public health, environmental sustainability,\
-  and community well-being. By the end of the hackathon, our goal is to have developed a working system that not only demonstrates\
-   our technical expertise but also contributes to a socially relevant cause—ensuring access to clean water through better monitoring and forecasting.")
+        [data-testid="stSidebar"] button:hover {
+            background-color: white; /* Hover background */
+            color: #005f73; /* Hover text color */
+            transform: scale(1.05);
+        }
 
-st.divider()
-st.subheader("Accessibility and Usability")
-st.write("Streamlit is a powerful yet easy-to-use framework that enables rapid development of interactive web applications,\
- making it an ideal choice for our water quality forecasting tool. Its simplicity allows us to focus on building an intuitive\
-  user interface while handling complex data and machine learning models on the backend. By using Streamlit, we can present intricate\
-   water quality data—such as pH levels, contaminant concentrations, and predictive trends—in a clean, user-friendly format that’s easily\
-    accessible to a broad audience.")
+        /* Sidebar dropdowns and sliders */
+        [data-testid="stSidebar"] .stSelectbox,
+        [data-testid="stSidebar"] .stSlider {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #005f73; /* Darker blue for dropdown text */
+            border-radius: 8px;
+            padding: 5px;
+            margin: 10px 0;
+        }
 
-st.write("Our goal is to make this tool valuable not only for government agencies and environmental researchers but also for local"
-         "\ communities and individuals who want to monitor their water supply. Streamlit’s interactive features will allow users to"
-         "\ explore real-time data and forecasts in a way that’s both visually engaging and informative. Whether it's policymakers making"
-         "\ data-driven decisions, researchers tracking environmental changes, or individuals concerned about the quality of their water,"
-         "\ our platform is designed to empower users with the information they need to take proactive steps in safeguarding their water resources.")
+        /* Sidebar text input */
+        [data-testid="stSidebar"] input {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #005f73; /* Input text color */
+            border-radius: 5px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
 
-# Footer
-st.divider()
-col5, col6, col7 = st.columns([1, 1, 1])
-with col6:
-    st.image(IMAGE_FIU_BANNER, width=200)
+        /* Sidebar hover effects for links */
+        [data-testid="stSidebar"] a {
+            color: #005f73; /* Link text color */
+            text-decoration: none;
+            font-weight: bold;
+        }
 
+        [data-testid="stSidebar"] a:hover {
+            color: #0a9396;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Background Section with Cards
+st.markdown('<div class="main-container" style="margin-top: 0;">', unsafe_allow_html=True)  # No extra top margin
+st.markdown('<h2 class="section-header">Our Purpose</h2>', unsafe_allow_html=True)
+
+tab1, tab2 = st.columns([2, 1])
+with tab1:
+    st.markdown(
+        """
+        <div class="card">
+            <p>
+            Our project centered on the real-time analysis of water quality using advanced machine learning techniques, 
+            specifically tailored for the unique environmental conditions of Biscayne Bay and Haulover Beach. 
+            By focusing on location-specific datasets, we significantly improved predictive model performance, enabling 
+            timely forecasts for water quality issues that impact marine life and human health.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with tab2:
+    st.image(IMAGE1, caption="The Heron collecting data from the FIU lake by Parking Garage 6 (PG-6).", use_column_width=True)
+
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# Data Collection Section with Tabs
+st.markdown('<h2 class="section-header">Data Collection Process</h2>', unsafe_allow_html=True)
+tab3, tab4 = st.columns([2, 1])
+
+with tab3:
+    st.markdown(
+        """
+        <div class="card">
+            <p>
+            Using advanced sensors and automated systems, we gathered comprehensive datasets including temperature, pH, 
+            dissolved oxygen, and nutrient concentrations. Each measurement was paired with precise GPS coordinates for 
+            geospatial accuracy. Our machine learning models underwent rigorous training with techniques like feature scaling 
+            and cross-validation to ensure high precision and minimal biases.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with tab4:
+    st.image(IMAGE2, caption="Our boat being prepared for a Biscayne Bay mission to collect data and provide updates "
+                             "on the quality of the ocean.", use_column_width=True)
+
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
