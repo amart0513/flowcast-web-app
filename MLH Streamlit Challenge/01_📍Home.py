@@ -135,21 +135,21 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sidebar Custom CSS with Lighter Blue Background
+# Sidebar Custom CSS with White Text
 st.markdown(
     """
     <style>
         /* Sidebar container */
         [data-testid="stSidebar"] {
-            background-color: #b3dfe6; /* Lighter blue background */
-            color: white; /* Default text color */
+            background-color: #005f73; /* Match the darker blue from the banner */
+            color: white; /* Default text color for contrast */
             padding: 20px;
         }
 
         /* Sidebar title */
         [data-testid="stSidebar"] h1 {
             font-size: 1.5rem;
-            color: #005f73; /* Darker blue for title */
+            color: #ffffff; /* White for title text */
             text-align: center;
             font-weight: bold;
             margin-bottom: 20px;
@@ -158,13 +158,13 @@ st.markdown(
         /* Sidebar widget labels */
         [data-testid="stSidebar"] label {
             font-size: 1rem;
-            color: #005f73; /* Darker blue for labels */
+            color: #ffffff; /* White for labels */
             margin-bottom: 8px;
         }
 
         /* Sidebar buttons */
         [data-testid="stSidebar"] button {
-            background-color: #0a9396;
+            background-color: #0a9396; /* Match lighter greenish-blue from the banner gradient */
             color: white; /* Button text color */
             font-size: 1rem;
             border-radius: 8px;
@@ -176,16 +176,24 @@ st.markdown(
         }
 
         [data-testid="stSidebar"] button:hover {
-            background-color: white; /* Hover background */
-            color: #005f73; /* Hover text color */
+            background-color: #ffffff; /* White background on hover */
+            color: #005f73; /* Hover text matches darker blue */
             transform: scale(1.05);
         }
 
-        /* Sidebar dropdowns and sliders */
-        [data-testid="stSidebar"] .stSelectbox,
+        /* Sidebar dropdowns */
+        [data-testid="stSidebar"] .stSelectbox {
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency for dropdowns */
+            color: #ffffff; /* White dropdown text */
+            border-radius: 8px;
+            padding: 5px;
+            margin: 10px 0;
+        }
+
+        /* Sidebar sliders */
         [data-testid="stSidebar"] .stSlider {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #005f73; /* Darker blue for dropdown text */
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
+            color: #ffffff; /* Slider text in white */
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
@@ -193,27 +201,29 @@ st.markdown(
 
         /* Sidebar text input */
         [data-testid="stSidebar"] input {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #005f73; /* Input text color */
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
+            color: #ffffff; /* Input text color */
             border-radius: 5px;
             padding: 5px;
             margin-bottom: 10px;
         }
 
-        /* Sidebar hover effects for links */
+        /* Sidebar links */
         [data-testid="stSidebar"] a {
-            color: #005f73; /* Link text color */
+            color: #ffffff; /* Link text in white */
             text-decoration: none;
             font-weight: bold;
         }
 
         [data-testid="stSidebar"] a:hover {
-            color: #0a9396;
+            color: #0a9396; /* Hover text matches lighter tone */
         }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
 
 # Background Section with Cards
 st.markdown('<div class="main-container" style="margin-top: 0;">', unsafe_allow_html=True)  # No extra top margin

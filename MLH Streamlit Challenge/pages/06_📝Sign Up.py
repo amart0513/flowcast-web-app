@@ -1,7 +1,5 @@
 import streamlit as st
 
-IMAGE_FIU_BANNER = "media/FIU_Banner.png"
-
 MAJORS = [
     "",  # Placeholder for an empty selection
     "Accounting",
@@ -52,17 +50,67 @@ MAJORS = [
     "Web Development"
 ]
 
-st.set_page_config(page_title="FlowCast", layout="wide",
+st.set_page_config(page_title="FlowCast: Sign Up", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
 
-st.title('Sign Up to Learn More')
-st.write('Please enter your information below:')
+# Custom CSS for consistent layout and spacing
+st.markdown(
+    """
+    <style>
+        /* Consistent Banner */
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            background: linear-gradient(135deg, #005f73, #0a9396);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 10px; /* Minimized margin */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Container */
+        .form-container {
+            padding: 20px 50px;
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Reduced margin */
+        }
+
+        /* Divider Style */
+        .divider {
+            border-top: 2px solid #005f73;
+            margin: 10px 0; /* Minimized margin */
+        }
+
+        /* Remove Padding from Default Streamlit Elements */
+        .stMarkdown {
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove margin */
+        }
+
+        .stTextInput, .stSelectbox, .stCheckbox, .stButton {
+            margin-bottom: 10px; /* Tighten spacing between form elements */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Consistent banner
+st.markdown('<div class="hero-title">Sign Up to Learn More</div>', unsafe_allow_html=True)
+
+# Form Section
+st.markdown('<div class="form-container">', unsafe_allow_html=True)
+st.write("Please enter your information below:")
 
 with st.form("Registration", clear_on_submit=True):
     name = st.text_input("Name:")
     email = st.text_input("Email:")
-    major = st.selectbox("Major:",
-                         options=MAJORS)
+    major = st.selectbox("Major:", options=MAJORS)
     level = st.selectbox("Degree Level:", options=["", "Undergrad", "Masters", "PhD", "Other"])
     subscribe = st.checkbox("Do you want to know about future events?")
     submit = st.form_submit_button("Submit")
@@ -71,7 +119,8 @@ with st.form("Registration", clear_on_submit=True):
     elif submit:
         st.warning(f"{name}, {level} in {major}, is NOT registered")
     else:
-        st.info("Please Fill out the form")
-st.divider()
-# col5, col6, col7 = st.columns([1, 1, 1])
+        st.info("Please fill out the form.")
+st.markdown('</div>', unsafe_allow_html=True)
 
+# Divider for separation
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)

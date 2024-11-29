@@ -1,22 +1,15 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-from joblib import dump, load
-import os
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 # Page Configuration
 st.set_page_config(page_title="FlowCast: Data Analysis", layout="wide", page_icon="🌊")
 
-# Custom CSS for Banner and Layout
+# Custom CSS for Consistent Banner, Subtitles, and Monospace Font
 st.markdown(
     """
     <style>
+        /* Banner Styling */
         .hero-title {
             font-size: 3rem;
             font-weight: bold;
@@ -28,24 +21,30 @@ st.markdown(
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        /* Section Container */
         .section-container {
             padding: 20px 50px;
-            font-family: 'Arial', sans-serif;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .slider-container {
-            margin-bottom: 30px;
+
+        /* Styled Subheaders and Subtitles */
+        .styled-subheader {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #005f73; /* Banner Consistent Color */
+            margin-bottom: 15px;
         }
-        .divider {
-            border-top: 2px solid #005f73;
-            margin: 30px 0;
-        }
+
+        /* Tooltip Styling */
         .tooltip {
             font-size: 0.9rem;
             color: gray;
         }
+
+        /* Metric Box */
         .metric-box {
             background-color: #f7f9fa;
             border: 1px solid #e3e6e8;
@@ -54,16 +53,11 @@ st.markdown(
             margin-bottom: 15px;
             text-align: center;
         }
-        /* Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+
+        /* Divider */
+        .divider {
+            border-top: 2px solid #005f73;
+            margin: 30px 0;
         }
     </style>
     """,
@@ -73,11 +67,10 @@ st.markdown(
 # Banner Title
 st.markdown('<div class="hero-title">Data Analysis</div>', unsafe_allow_html=True)
 
-
 # Function to Render Data
 def render_data():
     # Toggle for Dataset Selection
-    dataset_toggle = st.radio("Choose Dataset", ["Default Dataset", "Upload Your Own"])
+    dataset_toggle = st.radio("Choose Dataset", ["Default Dataset", "Upload Your Own"], help="Select a dataset to analyze.")
 
     # File Upload Section
     if dataset_toggle == "Upload Your Own":
@@ -99,7 +92,6 @@ def render_data():
             st.error(f"Missing column: {column}. Please upload a valid CSV file.")
             return
 
-    # Handle Missing Data
     if df.isnull().values.any():
         st.warning("Data contains NaN values. Please clean your data.")
 
@@ -108,6 +100,8 @@ def render_data():
 
     # Sliders for Filtering
     st.markdown('<div class="slider-container">', unsafe_allow_html=True)
+    st.markdown('<p class="styled-subheader">Filter Data</p>', unsafe_allow_html=True)
+
     min_depth, max_depth = df["Depth m"].min(), df["Depth m"].max()
     min_temp, max_temp = df["Temp °C"].min(), df["Temp °C"].max()
     min_ph, max_ph = df["pH"].min(), df["pH"].max()
@@ -125,19 +119,19 @@ def render_data():
                      (df["Temp °C"].between(selected_temp[0], selected_temp[1])) &
                      (df["pH"].between(selected_ph[0], selected_ph[1]))]
 
-    st.metric(label="Data Points", value=len(filtered_df))
+    st.metric(label="Filtered Data Points", value=len(filtered_df))
 
-    # Tabs for Visualizations
+    # Visualization Tabs
     Scatter_Plots_tab, Maps_tab, Line_Plots_tab, threeD_Plots_tab, Raw_Plots_tab = st.tabs(
         ["Scatter Plots", "Maps", "Line", "3D Plots", "Raw Data"])
 
     with Scatter_Plots_tab:
-        st.subheader("Scatter Plot")
+        st.markdown('<p class="styled-subheader">Scatter Plot</p>', unsafe_allow_html=True)
         fig = px.scatter(filtered_df, x="Depth m", y="Temp °C", size="pH", color="ODO mg/L")
         st.plotly_chart(fig)
 
     with Maps_tab:
-        st.subheader("Maps")
+        st.markdown('<p class="styled-subheader">Maps</p>', unsafe_allow_html=True)
         if 'Latitude' in df.columns and 'Longitude' in df.columns:
             fig = px.scatter_mapbox(filtered_df, lat="Latitude", lon="Longitude",
                                     hover_data=["Depth m", "pH", "Temp °C", "ODO mg/L"],
@@ -148,22 +142,22 @@ def render_data():
             st.error("Missing 'Latitude' or 'Longitude' columns in data.")
 
     with Line_Plots_tab:
-        st.subheader("Line Plot")
+        st.markdown('<p class="styled-subheader">Line Plot</p>', unsafe_allow_html=True)
         color = st.color_picker("Choose a color", "#081E3F")
         fig = px.line(filtered_df, x=filtered_df.index, y="ODO mg/L")
         fig.update_traces(line_color=color)
         st.plotly_chart(fig)
 
     with threeD_Plots_tab:
-        st.subheader("3D Plot")
+        st.markdown('<p class="styled-subheader">3D Plot</p>', unsafe_allow_html=True)
         fig = px.scatter_3d(filtered_df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L")
         fig.update_scenes(zaxis_autorange="reversed")
         st.plotly_chart(fig)
 
     with Raw_Plots_tab:
-        st.subheader("Fetched Data")
+        st.markdown('<p class="styled-subheader">Fetched Data</p>', unsafe_allow_html=True)
         st.dataframe(filtered_df)
-        st.subheader("Descriptive Statistics")
+        st.markdown('<p class="styled-subheader">Descriptive Statistics</p>', unsafe_allow_html=True)
         st.dataframe(filtered_df.describe())
 
     st.markdown('</div>', unsafe_allow_html=True)

@@ -8,10 +8,11 @@ API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
 st.set_page_config(page_title="FlowCast: NOAA Data", layout="wide", page_icon="🌊", initial_sidebar_state="expanded")
 
-# Custom CSS for consistent banner and layout
+# Custom CSS for consistent banner and optimized layout
 st.markdown(
     """
     <style>
+        /* Consistent Banner */
         .hero-title {
             font-size: 3rem;
             font-weight: bold;
@@ -20,23 +21,38 @@ st.markdown(
             background: linear-gradient(135deg, #005f73, #0a9396);
             padding: 20px;
             border-radius: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 10px; /* Reduced margin */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        /* Consistent Subtitle and Subheader Styles */
+        .styled-subheader {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #005f73; /* Same color as the banner */
+            margin: 5px 0; /* Reduced vertical spacing */
+        }
+
+        /* Section Container */
         .section-container {
             padding: 20px 50px;
             font-family: 'Arial', sans-serif;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Reduced margin */
         }
+
+        /* Divider Style */
         .divider {
             border-top: 2px solid #005f73;
-            margin: 30px 0;
+            margin: 10px 0; /* Reduced margin */
         }
+
+        /* Center Text */
         .center-text {
             text-align: center;
+            margin: 0; /* Removed extra margins */
         }
     </style>
     """,
@@ -46,14 +62,16 @@ st.markdown(
 # Consistent banner
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
+
 # Function to display raw data
 def raw_data(df):
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("Fetched Data")
+    st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
     st.dataframe(df)
-    st.subheader("Descriptive Statistics")
+    st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
     st.dataframe(df.describe())
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 # Function to render data from NOAA API
 def render_API():
@@ -82,7 +100,7 @@ def render_API():
         df_api['WTMP'] = pd.to_numeric(df_api['WTMP'], errors='coerce')
 
         # Station Title
-        st.markdown(f'<h3 class="center-text">{selected_station}</h3>', unsafe_allow_html=True)
+        st.markdown(f'<h3 class="center-text styled-subheader">{selected_station}</h3>', unsafe_allow_html=True)
 
         # Display raw data
         raw_data(df_api)
@@ -92,7 +110,8 @@ def render_API():
         if not valid_data.empty:
             # Create a line chart using matplotlib
             st.markdown('<div class="section-container">', unsafe_allow_html=True)
-            st.subheader(f"Water Temperature at {selected_station}")
+            st.markdown(f'<div class="styled-subheader">Water Temperature at {selected_station}</div>',
+                        unsafe_allow_html=True)
             plt.figure(figsize=(10, 5))
             plt.plot(valid_data.index, valid_data, marker='o', linestyle='-', color='b')
             plt.title(f"Water Temperature at {selected_station}", fontsize=16)
@@ -107,6 +126,7 @@ def render_API():
             st.warning(f"No valid water temperature data available for {selected_station}.")
     else:
         st.error(f"Failed to retrieve data for station ID {station_id}. Please try again.")
+
 
 # Call render_API to display the page
 render_API()
