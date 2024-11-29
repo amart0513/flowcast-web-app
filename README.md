@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a water quality predictor built using Streamlit, an open-source Python library for creating web apps, and powered by machine learning for water quality prediction. The app focuses on predicting water quality in specific regions, such as Biscayne Bay and Haulover Beach, while visualizing and analyzing historical and real-time water quality data.
+This project is a water quality predictor built using Python, HTML, CSS, JavaScript, and Streamlit, an open-source Python library for creating web apps, and powered by machine learning for water quality prediction. The app focuses on predicting water quality in specific regions, such as Biscayne Bay and Haulover Beach, while visualizing and analyzing historical and real-time water quality data.
 
 ## Features
 
