@@ -2,7 +2,6 @@ import streamlit as st
 
 IMAGE1 = "media/boat1.jpg"
 IMAGE2 = "media/boat2.jpg"
-IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 
 st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")

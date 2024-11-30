@@ -1,12 +1,7 @@
 import streamlit as st
 
-
-IMAGE_MLH = "media/MLH.png"
 IMAGE_JESUS = "media/JesusPic.jpg"
 IMAGE_ANGIE = "media/AngiePic.jpg"
-IMAGE_FIU = "media/FIU_LOGO.png"
-IMAGE_FIU_BANNER = "media/FIU_Banner.png"
-
 
 st.set_page_config(page_title="FlowCast", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
@@ -22,18 +17,13 @@ def load_media(column, file_path, caption):
             column.audio(file_path)
 
 
-
-
 st.title("About Us")
 st.subheader("Get to Know the Team!")
 st.divider()
 col1, col2, col3, col4 = st.columns(4)
 load_media(col2, IMAGE_JESUS, "Jesus Elespuru, Senior, Front-End Developer, Data-Collection, Florida International "
-                                  "University")
+                              "University")
 load_media(col3, IMAGE_ANGIE,
-               "Angie Martinez, Senior, Back-End Developer, Data-Collection, Florida International University")
+           "Angie Martinez, Senior, Back-End Developer, Data-Collection, Florida International University")
 st.divider()
 col5, col6, col7 = st.columns([1, 1, 1])
-
-with col6:
-     st.image(IMAGE_FIU_BANNER, width=200)
