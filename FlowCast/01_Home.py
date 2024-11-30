@@ -12,8 +12,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# header 
-
 # Custom CSS for styling and animations
 st.markdown(
     """
@@ -137,21 +135,21 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sidebar Custom CSS with White Text
+# Sidebar Custom CSS with Lighter Blue Background
 st.markdown(
     """
     <style>
         /* Sidebar container */
         [data-testid="stSidebar"] {
-            background-color: #005f73; /* Match the darker blue from the banner */
-            color: white; /* Default text color for contrast */
+            background-color: #b3dfe6; /* Lighter blue background */
+            color: white; /* Default text color */
             padding: 20px;
         }
 
         /* Sidebar title */
         [data-testid="stSidebar"] h1 {
             font-size: 1.5rem;
-            color: #ffffff; /* White for title text */
+            color: #005f73; /* Darker blue for title */
             text-align: center;
             font-weight: bold;
             margin-bottom: 20px;
@@ -160,13 +158,13 @@ st.markdown(
         /* Sidebar widget labels */
         [data-testid="stSidebar"] label {
             font-size: 1rem;
-            color: #ffffff; /* White for labels */
+            color: #005f73; /* Darker blue for labels */
             margin-bottom: 8px;
         }
 
         /* Sidebar buttons */
         [data-testid="stSidebar"] button {
-            background-color: #0a9396; /* Match lighter greenish-blue from the banner gradient */
+            background-color: #0a9396;
             color: white; /* Button text color */
             font-size: 1rem;
             border-radius: 8px;
@@ -178,24 +176,16 @@ st.markdown(
         }
 
         [data-testid="stSidebar"] button:hover {
-            background-color: #ffffff; /* White background on hover */
-            color: #005f73; /* Hover text matches darker blue */
+            background-color: white; /* Hover background */
+            color: #005f73; /* Hover text color */
             transform: scale(1.05);
         }
 
-        /* Sidebar dropdowns */
-        [data-testid="stSidebar"] .stSelectbox {
-            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency for dropdowns */
-            color: #ffffff; /* White dropdown text */
-            border-radius: 8px;
-            padding: 5px;
-            margin: 10px 0;
-        }
-
-        /* Sidebar sliders */
+        /* Sidebar dropdowns and sliders */
+        [data-testid="stSidebar"] .stSelectbox,
         [data-testid="stSidebar"] .stSlider {
-            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
-            color: #ffffff; /* Slider text in white */
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #005f73; /* Darker blue for dropdown text */
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
@@ -203,28 +193,27 @@ st.markdown(
 
         /* Sidebar text input */
         [data-testid="stSidebar"] input {
-            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
-            color: #ffffff; /* Input text color */
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #005f73; /* Input text color */
             border-radius: 5px;
             padding: 5px;
             margin-bottom: 10px;
         }
 
-        /* Sidebar links */
+        /* Sidebar hover effects for links */
         [data-testid="stSidebar"] a {
-            color: #ffffff; /* Link text in white */
+            color: #005f73; /* Link text color */
             text-decoration: none;
             font-weight: bold;
         }
 
         [data-testid="stSidebar"] a:hover {
-            color: #0a9396; /* Hover text matches lighter tone */
+            color: #0a9396;
         }
     </style>
     """,
     unsafe_allow_html=True,
 )
-
 
 
 # Background Section with Cards
@@ -248,7 +237,7 @@ with tab1:
     )
 
 with tab2:
-    st.image(IMAGE1, caption="The Heron collecting data from the FIU lake by Parking Garage 6 (PG-6).", use_column_width=True)
+    st.image(IMAGE1, caption="The Heron collecting data from the FIU lake by Parking Garage 6 (PG-6).", use_container_width=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
@@ -273,7 +262,7 @@ with tab3:
 
 with tab4:
     st.image(IMAGE2, caption="Our boat being prepared for a Biscayne Bay mission to collect data and provide updates "
-                             "on the quality of the ocean.", use_column_width=True)
+                             "on the quality of the ocean.", use_container_width=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)

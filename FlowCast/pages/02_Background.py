@@ -194,7 +194,7 @@ def render_background():
         )
 
     with col2:
-        st.image(IMAGE1, caption="The Heron collecting water quality data.", use_column_width=True)
+        st.image(IMAGE1, caption="The Heron collecting water quality data.", use_container_width=True)
 
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
