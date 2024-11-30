@@ -5,7 +5,7 @@ import plotly.express as px
 # Page Configuration
 st.set_page_config(page_title="FlowCast: Data Analysis", layout="wide", page_icon="🌊")
 
-# Custom CSS for styling
+# Custom CSS for Styling
 st.markdown(
     """
     <style>
@@ -22,41 +22,45 @@ st.markdown(
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Styled Subheaders */
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] {
+            background-color: #0a9396; /* Lighter blue from the banner gradient */
+            color: white;
+        }
+
+        /* Sidebar Titles */
+        [data-testid="stSidebar"] h3 {
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Metric Box Styling */
+        .metric-box {
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: white; /* White text for contrast */
+            font-weight: bold;
+        }
+
+        /* Subheader Styling */
         .styled-subheader {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #005f73; /* Match banner color */
+            color: #005f73;
             margin-bottom: 15px;
         }
 
-        /* Tooltip Styling */
-        .tooltip {
-            font-size: 0.9rem;
-            color: gray;
-        }
-
-        /* Tab Styling */
-        .tab-container {
-            padding: 20px;
-            background-color: #f7f9fa;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Map Styling */
+        /* Map Container Styling */
         .map-container {
             padding: 20px;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.95); /* Transparent white */
             border: 2px solid #005f73;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Divider */
-        .divider {
-            border-top: 2px solid #005f73;
-            margin: 30px 0;
         }
     </style>
     """,
@@ -66,7 +70,7 @@ st.markdown(
 # Banner Title
 st.markdown('<div class="hero-title">Data Analysis</div>', unsafe_allow_html=True)
 
-# Function to Render Data
+
 def render_data():
     # Dataset Selection
     dataset_toggle = st.radio("Choose Dataset", ["Default Dataset", "Upload Your Own"], help="Select a dataset to analyze.")
@@ -94,35 +98,59 @@ def render_data():
     if df.isnull().values.any():
         st.warning("Data contains NaN values. Please clean your data.")
 
-    # Data Analysis Section
-    st.markdown('<div class="section-container">', unsafe_allow_html=True)
+    # Sidebar Metrics for Key Parameters
+    st.sidebar.markdown("<h3>Key Water Quality Metrics</h3>", unsafe_allow_html=True)
 
-    # Sliders for Filtering
-    st.markdown('<p class="styled-subheader">Filter Data</p>', unsafe_allow_html=True)
-    min_depth, max_depth = df["Depth m"].min(), df["Depth m"].max()
-    min_temp, max_temp = df["Temp °C"].min(), df["Temp °C"].max()
-    min_ph, max_ph = df["pH"].min(), df["pH"].max()
+    # Dissolved Oxygen Metric
+    avg_odo = df['ODO mg/L'].mean()
+    st.sidebar.markdown(
+        f"<div class='metric-box'>Dissolved Oxygen (ODO)<br><span style='font-size: 1.2rem;'>{avg_odo:.2f} mg/L</span></div>",
+        unsafe_allow_html=True,
+    )
 
-    selected_depth = st.slider("Select Depth (m)", min_value=min_depth, max_value=max_depth, value=(min_depth, max_depth))
-    selected_temp = st.slider("Select Temperature (°C)", min_value=min_temp, max_value=max_temp, value=(min_temp, max_temp))
-    selected_ph = st.slider("Select pH", min_value=min_ph, max_value=max_ph, value=(min_ph, max_ph))
-    st.markdown('<p class="tooltip">Use the sliders to filter data points based on your selection.</p>', unsafe_allow_html=True)
+    # Temperature Metric
+    avg_temp = df['Temp °C'].mean()
+    st.sidebar.markdown(
+        f"<div class='metric-box'>Temperature<br><span style='font-size: 1.2rem;'>{avg_temp:.2f} °C</span></div>",
+        unsafe_allow_html=True,
+    )
+
+    # pH Metric
+    avg_ph = df['pH'].mean()
+    st.sidebar.markdown(
+        f"<div class='metric-box'>pH Level<br><span style='font-size: 1.2rem;'>{avg_ph:.2f}</span></div>",
+        unsafe_allow_html=True,
+    )
+
+    # Depth Metric
+    avg_depth = df['Depth m'].mean()
+    st.sidebar.markdown(
+        f"<div class='metric-box'>Depth<br><span style='font-size: 1.2rem;'>{avg_depth:.2f} m</span></div>",
+        unsafe_allow_html=True,
+    )
 
     # Filtered Data
-    filtered_df = df[(df["Depth m"].between(selected_depth[0], selected_depth[1])) &
-                     (df["Temp °C"].between(selected_temp[0], selected_temp[1])) &
-                     (df["pH"].between(selected_ph[0], selected_ph[1]))]
+    filtered_df = df.copy()
 
-    st.metric(label="Filtered Data Points", value=len(filtered_df))
+    st.metric(label="Total Data Points", value=len(filtered_df))
 
     # Tabs for Visualizations
     Scatter_Plots_tab, Maps_tab, Line_Plots_tab, threeD_Plots_tab, Raw_Plots_tab = st.tabs(
-        ["Scatter Plots", "Maps", "Line", "3D Plots", "Raw Data"])
+        ["Scatter Plots", "Maps", "Line", "3D Plots", "Raw Data"]
+    )
 
     # Scatter Plot Tab
     with Scatter_Plots_tab:
         st.markdown('<p class="styled-subheader">Scatter Plot</p>', unsafe_allow_html=True)
-        fig = px.scatter(filtered_df, x="Depth m", y="Temp °C", size="pH", color="ODO mg/L", template="plotly_white")
+        fig = px.scatter(
+            filtered_df,
+            x="Depth m",
+            y="Temp °C",
+            size="pH",
+            color="ODO mg/L",
+            color_continuous_scale=px.colors.sequential.Turbo,
+            template="plotly_white",
+        )
         st.plotly_chart(fig)
 
     # Maps Tab
@@ -136,9 +164,9 @@ def render_data():
                 lon="Longitude",
                 hover_data=["Depth m", "pH", "Temp °C", "ODO mg/L"],
                 color="ODO mg/L",
+                color_continuous_scale=px.colors.sequential.Turbo,
                 zoom=12,
                 mapbox_style="carto-positron",
-                title="Geospatial Visualization of Water Quality",
             )
             st.plotly_chart(fig, use_container_width=True)
             st.markdown('</div>', unsafe_allow_html=True)
@@ -156,7 +184,15 @@ def render_data():
     # 3D Plot Tab
     with threeD_Plots_tab:
         st.markdown('<p class="styled-subheader">3D Plot</p>', unsafe_allow_html=True)
-        fig = px.scatter_3d(filtered_df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L", template="plotly_white")
+        fig = px.scatter_3d(
+            filtered_df,
+            x="Longitude",
+            y="Latitude",
+            z="Depth m",
+            color="ODO mg/L",
+            color_continuous_scale=px.colors.sequential.Turbo,
+            template="plotly_white",
+        )
         fig.update_scenes(zaxis_autorange="reversed")
         st.plotly_chart(fig)
 
@@ -167,7 +203,6 @@ def render_data():
         st.markdown('<p class="styled-subheader">Descriptive Statistics</p>', unsafe_allow_html=True)
         st.dataframe(filtered_df.describe())
 
-    st.markdown('</div>', unsafe_allow_html=True)
 
-
+# Render Data Analysis Page
 render_data()
