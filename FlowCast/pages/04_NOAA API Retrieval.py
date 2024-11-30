@@ -3,12 +3,11 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 
-IMAGE_FIU_BANNER = "media/FIU_Banner.png"
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
 st.set_page_config(page_title="FlowCast: NOAA Data", layout="wide", page_icon="🌊", initial_sidebar_state="expanded")
 
-# Custom CSS for consistent banner and optimized layout
+# Custom CSS for consistent banner, optimized layout, and active sidebar highlighting
 st.markdown(
     """
     <style>
@@ -21,7 +20,7 @@ st.markdown(
             background: linear-gradient(135deg, #005f73, #0a9396);
             padding: 20px;
             border-radius: 15px;
-            margin-bottom: 10px; /* Reduced margin */
+            margin-bottom: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
@@ -29,37 +28,97 @@ st.markdown(
         .styled-subheader {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #005f73; /* Same color as the banner */
-            margin: 5px 0; /* Reduced vertical spacing */
-        }
-
-        /* Section Container */
-        .section-container {
-            padding: 20px 50px;
-            font-family: 'Arial', sans-serif;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px; /* Reduced margin */
+            color: #005f73;
+            margin: 5px 0;
         }
 
         /* Divider Style */
         .divider {
             border-top: 2px solid #005f73;
-            margin: 10px 0; /* Reduced margin */
+            margin: 10px 0;
         }
 
         /* Center Text */
         .center-text {
             text-align: center;
-            margin: 0; /* Removed extra margins */
+            margin: 0;
+        }
+
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] {
+            background-color: #0a9396;
+            color: white;
+            padding: 20px;
+        }
+
+        [data-testid="stSidebar"] h3 {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        [data-testid="stSidebar"] label {
+            font-size: 1rem;
+            color: white;
+        }
+
+        [data-testid="stSidebar"] button {
+            background-color: #005f73;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        [data-testid="stSidebar"] button:hover {
+            background-color: #ffffff;
+            color: #005f73;
+            transform: scale(1.05);
+        }
+
+        [data-testid="stSidebar"] .stSelectbox {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            padding: 5px;
+            margin: 10px 0;
+        }
+
+        /* Highlight Active Sidebar Item */
+        .sidebar-item.active {
+            background-color: #005f73;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-item {
+            padding: 10px 15px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background-color: #ffffff;
+            color: #005f73;
+            transform: scale(1.05);
         }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Consistent banner
+# Banner
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
 

@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS for styling and animations
+# Custom CSS for Styling and Sidebar
 st.markdown(
     """
     <style>
@@ -108,6 +108,49 @@ st.markdown(
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] {
+            background-color: #0a9396; /* Match the lighter blue from the banner gradient */
+            color: white;
+            padding: 20px;
+        }
+
+        [data-testid="stSidebar"] h3 {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        [data-testid="stSidebar"] label {
+            font-size: 1rem;
+            color: white;
+        }
+
+        [data-testid="stSidebar"] button {
+            background-color: #005f73;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        [data-testid="stSidebar"] button:hover {
+            background-color: #ffffff;
+            color: #005f73;
+            transform: scale(1.05);
+        }
+
+        [data-testid="stSidebar"] .stSelectbox {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            padding: 5px;
+            margin: 10px 0;
         }
     </style>
     """,
