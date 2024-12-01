@@ -39,14 +39,12 @@ cd flowcast-web-app
 - macOS/Linux: Use python3 or python based on your setup.
 
 ### 3. Create a virtual environment (optional but highly recommended): 
-python -m venv venv
+- python -m venv venv
 
 ### 4. Activate the environment:
-**Windows**
-venv\Scripts\activate
+- **Windows**: venv\Scripts\activate
 
-**macOS\Linux**
-source venv/bin/activate
+- **macOS\Linux**: source venv/bin/activate
 
 ### 5. Install Required Dependencies
 Install all required Python packages: pip install -r requirements.txt
