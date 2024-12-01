@@ -9,7 +9,12 @@ st.set_page_config(
     page_title="FlowCast",
     layout="wide",
     page_icon="🌊",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
+    menu_items={
+        "Get help": "https://flowcast.example.com/help",
+        "Report a bug": "https://flowcast.example.com/report",
+        "About": "FlowCast is a real-time water monitoring and prediction app.",
+    },
 )
 
 # Custom CSS for Styling and Sidebar
@@ -21,17 +26,13 @@ st.markdown(
             margin: 0;
             padding: 0;
         }
-        .main-container {
-            background-color: white;
-            padding: 20px 50px;
-            font-family: 'Arial', sans-serif;
-        }
         .section-header {
             font-size: 2.5rem;
             text-align: center;
             margin-top: 50px;
             margin-bottom: 20px;
             color: #005f73;
+            font-family: "Consolas", monospace;
         }
         .divider {
             border-top: 1px solid #ccc;
@@ -49,16 +50,19 @@ st.markdown(
             border-radius: 10px;
             animation: fadeIn 1.5s ease-in-out;
             margin-bottom: 0; /* Removes the light gray gap */
+            font-family: "Consolas", monospace;
         }
         .hero-title {
             font-size: 3.5rem;
             font-weight: bold;
             margin-bottom: 15px;
             color: white;
+            font-family: "Consolas", monospace;
         }
         .hero-subtitle {
             font-size: 1.5rem;
             margin-bottom: 40px;
+            font-family: "Consolas", monospace;
         }
         .button-container a {
             text-decoration: none;
@@ -97,6 +101,7 @@ st.markdown(
         }
         .card p {
             margin-top: 10px;
+            font-family: "Consolas", monospace;
         }
         /* Animation */
         @keyframes fadeIn {
@@ -109,11 +114,12 @@ st.markdown(
                 transform: translateY(0);
             }
         }
-        /* Sidebar Styling */
+        /* Sidebar Styling--main sidebar */
         [data-testid="stSidebar"] {
             background-color: #0a9396; /* Match the lighter blue from the banner gradient */
-            color: white;
+            color: black;
             padding: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] h3 {
@@ -179,7 +185,6 @@ st.markdown(
 )
 
 # Background Section with Cards
-st.markdown('<div class="main-container" style="margin-top: 0;">', unsafe_allow_html=True)  # No extra top margin
 st.markdown('<h2 class="section-header">Our Purpose</h2>', unsafe_allow_html=True)
 
 tab1, tab2 = st.columns([2, 1])

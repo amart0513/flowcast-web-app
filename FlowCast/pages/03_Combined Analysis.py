@@ -26,18 +26,21 @@ st.markdown(
             border-radius: 15px;
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: "Consolas", monospace;
         }
 
         /* Sidebar Styling */
         [data-testid="stSidebar"] {
             background-color: #0a9396; /* Lighter blue from the banner gradient */
             color: white;
+            font-family: "Consolas", monospace;
         }
 
         /* Sidebar Titles */
         [data-testid="stSidebar"] h3 {
             color: white;
             font-weight: bold;
+            font-family: "Consolas", monospace;
         }
         
         [data-testid="stSidebar"] button {
@@ -64,6 +67,7 @@ st.markdown(
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
+            font-family: "Consolas", monospace;
         }
 
         /* Metric Box Styling */
@@ -76,6 +80,7 @@ st.markdown(
             text-align: center;
             color: white; /* White text for contrast */
             font-weight: bold;
+            font-family: "Consolas", monospace;
         }
 
         /* Subheader Styling */
@@ -84,6 +89,7 @@ st.markdown(
             font-weight: bold;
             color: #005f73;
             margin-bottom: 15px;
+            font-family: "Consolas", monospace;
         }
 
         /* Map Container Styling */

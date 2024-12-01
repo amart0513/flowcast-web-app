@@ -14,7 +14,7 @@ This project is a water quality predictor built using Python, HTML, CSS, JavaScr
 
 ## Table of Contents
 
-1. Installation
+1. Installation Guide
 2. How It Works
 3. Data Sources
 4. Machine Learning Model
@@ -23,22 +23,50 @@ This project is a water quality predictor built using Python, HTML, CSS, JavaScr
 7. Contributing
 8. License
 
-## Installation
+## Installation Guide
 
-To set up the project locally, follow these steps:
+### Option 1: Set up locally via Command Line
+Open your terminal (or command prompt) and execute the following commands:
 
-1. Clone the repository:
-
+bash
+### 1. Clone the repository
 git clone https://github.com/your-username/flowcast-web-app.git
+
+### Navigate into the project directory
 cd flowcast-web-app
 
-2. Install the required dependencies:
+### 2. Set Up Your Environment
+- Windows: Use python commands.
+- macOS/Linux: Use python3 or python based on your setup.
+
+### 3. Create a virtual environment (optional but highly recommended):
+#### Create a virtual environment
+python -m venv venv
+
+#### Activate the environment
+**Windows**
+venv\Scripts\activate
+
+**macOS\Linux**
+source venv/bin/activate
+
+#### 4. Install Required Dependencies
+Install all required Python packages:
 
 pip install -r requirements.txt
 
-3. Run the Streamlit app:
+#### 5. Run the Streamlit App
+Start the app by running the following command:
 
 streamlit run app.py
+
+#### 6. Access the App
+Once the app starts, you will see a URL in the terminal:
+
+
+
+
+
 
 ## How It Works
 

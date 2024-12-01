@@ -44,6 +44,7 @@ st.markdown(
             border-radius: 15px;
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: "Consolas", monospace;
         }
 
         /* Section Title Styling */
@@ -52,6 +53,7 @@ st.markdown(
             font-weight: bold;
             color: #005f73;
             margin-bottom: 15px;
+            font-family: "Consolas", monospace;
         }
 
         /* Container Styling */
@@ -61,6 +63,7 @@ st.markdown(
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            font-family: "Consolas", monospace;
         }
 
         /* Divider Styling */
@@ -75,6 +78,7 @@ st.markdown(
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 200px;
             height: 200px;
+            corner-radius: 50px;
         }
     </style>
     """,
@@ -90,17 +94,13 @@ st.markdown(
             margin: 0;
             padding: 0;
         }
-        .main-container {
-            background-color: blue;
-            padding: 20px 50px;
-            font-family: 'Arial', sans-serif;
-        }
         .section-header {
             font-size: 2.5rem;
             text-align: center;
             margin-top: 50px;
             margin-bottom: 20px;
             color: #005f73;
+            font-family: "Consolas", monospace;
         }
         .divider {
             border-top: 1px solid #ccc;
@@ -118,16 +118,19 @@ st.markdown(
             border-radius: 10px;
             animation: fadeIn 1.5s ease-in-out;
             margin-bottom: 0; /* Removes the light gray gap */
+            font-family: "Consolas", monospace;
         }
         .hero-title {
             font-size: 3.5rem;
             font-weight: bold;
             margin-bottom: 15px;
             color: white;
+            font-family: "Consolas", monospace;
         }
         .hero-subtitle {
             font-size: 1.5rem;
             margin-bottom: 40px;
+            font-family: "Consolas", monospace;
         }
         .button-container a {
             text-decoration: none;
@@ -155,6 +158,7 @@ st.markdown(
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+            font-family: "Consolas", monospace;
         }
         .card:hover {
             transform: translateY(-10px);
@@ -166,6 +170,7 @@ st.markdown(
         }
         .card p {
             margin-top: 10px;
+            font-family: "Consolas", monospace;
         }
         /* Animation */
         @keyframes fadeIn {
@@ -183,17 +188,20 @@ st.markdown(
             background-color: #0a9396; /* Match the lighter blue from the banner gradient */
             color: white;
             padding: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] h3 {
             color: white;
             font-weight: bold;
             margin-bottom: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] label {
             font-size: 1rem;
             color: white;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] button {
@@ -220,6 +228,7 @@ st.markdown(
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
+            font-family: "Consolas", monospace;
         }
     </style>
     """,

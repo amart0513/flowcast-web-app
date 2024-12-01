@@ -11,10 +11,7 @@ st.markdown(
     """
     <style>
         /* General Styles */
-        .main-container {
-            font-family: 'Arial', sans-serif;
-            padding: 20px 50px;
-        }
+
         .hero-title {
             font-size: 2.8rem;
             font-weight: bold;
@@ -25,6 +22,7 @@ st.markdown(
             border-radius: 15px;
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: "Consolas", monospace;
         }
         .section-header {
             font-size: 2.5rem;
@@ -32,6 +30,7 @@ st.markdown(
             margin-top: 40px;
             margin-bottom: 20px;
             color: #005f73;
+            font-family: "Consolas", monospace;
         }
         .divider {
             border: 0;
@@ -46,6 +45,7 @@ st.markdown(
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-family: "Consolas", monospace;
         }
         .card:hover {
             transform: translateY(-5px);
@@ -90,17 +90,13 @@ st.markdown(
             margin: 0;
             padding: 0;
         }
-        .main-container {
-            background-color: white;
-            padding: 20px 50px;
-            font-family: 'Arial', sans-serif;
-        }
         .section-header {
             font-size: 2.5rem;
             text-align: center;
             margin-top: 50px;
             margin-bottom: 20px;
             color: #005f73;
+            font-family: "Consolas", monospace;
         }
         .divider {
             border-top: 1px solid #ccc;
@@ -181,14 +177,16 @@ st.markdown(
         /* Sidebar Styling */
         [data-testid="stSidebar"] {
             background-color: #0a9396; /* Match the lighter blue from the banner gradient */
-            color: white;
+            color: #005f73;
             padding: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] h3 {
             color: white;
             font-weight: bold;
             margin-bottom: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] label {
@@ -220,6 +218,7 @@ st.markdown(
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
+            font-family: "Consolas", monospace;
         }
     </style>
     """,

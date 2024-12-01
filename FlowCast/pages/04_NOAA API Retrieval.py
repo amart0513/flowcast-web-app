@@ -22,6 +22,7 @@ st.markdown(
             border-radius: 15px;
             margin-bottom: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: "Consolas", monospace;
         }
 
         /* Consistent Subtitle and Subheader Styles */
@@ -30,6 +31,7 @@ st.markdown(
             font-weight: bold;
             color: #005f73;
             margin: 5px 0;
+            font-family: "Consolas", monospace;
         }
 
         /* Divider Style */
@@ -42,6 +44,7 @@ st.markdown(
         .center-text {
             text-align: center;
             margin: 0;
+            font-family: "Consolas", monospace;
         }
 
         /* Sidebar Styling */
@@ -49,17 +52,20 @@ st.markdown(
             background-color: #0a9396;
             color: white;
             padding: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] h3 {
             color: white;
             font-weight: bold;
             margin-bottom: 20px;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] label {
             font-size: 1rem;
             color: white;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] button {
@@ -72,6 +78,7 @@ st.markdown(
             border: none;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.3s;
+            font-family: "Consolas", monospace;
         }
 
         [data-testid="stSidebar"] button:hover {
@@ -86,6 +93,7 @@ st.markdown(
             border-radius: 8px;
             padding: 5px;
             margin: 10px 0;
+            font-family: "Consolas", monospace;
         }
 
         /* Highlight Active Sidebar Item */
@@ -106,6 +114,7 @@ st.markdown(
             margin-bottom: 10px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
+            font-family: "Consolas", monospace;
         }
 
         .sidebar-item:hover {
