@@ -39,6 +39,32 @@ st.markdown(
             color: white;
             font-weight: bold;
         }
+        
+        [data-testid="stSidebar"] button {
+            background-color: #005f73;
+            color: white;
+            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        [data-testid="stSidebar"] button:hover {
+            background-color: #ffffff;
+            color: #005f73;
+            transform: scale(1.05);
+        }
+
+        [data-testid="stSidebar"] .stSelectbox {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            padding: 5px;
+            margin: 10px 0;
+        }
 
         /* Metric Box Styling */
         .metric-box {
@@ -123,7 +149,7 @@ def data_analysis():
     # Temperature Metric
     avg_temp = df['Temp °C'].mean()
     st.sidebar.markdown(
-        f"<div class='metric-box'>Temperature<br><span style='font-size: 1.2rem;'>{avg_temp:.2f} °C</span></div>",
+        f"<div class='metric-box'>Temperature °C<br><span style='font-size: 1.2rem;'>{avg_temp:.2f} °C</span></div>",
         unsafe_allow_html=True,
     )
 
@@ -149,7 +175,7 @@ def data_analysis():
     with Scatter_Plots_tab:
         st.markdown('<p class="styled-subheader">Scatter Plot</p>', unsafe_allow_html=True)
         fig = px.scatter(
-            df, x="Depth m", y="Temp °C", size="pH", color="ODO mg/L", color_continuous_scale=px.colors.sequential.Turbo
+            df, x="Depth m", y="Temp °C", size="pH", color="ODO mg/L", color_continuous_scale=px.colors.sequential.ice
         )
         st.plotly_chart(fig)
 
@@ -172,13 +198,14 @@ def data_analysis():
     with threeD_Plots_tab:
         st.markdown('<p class="styled-subheader">3D Plot</p>', unsafe_allow_html=True)
         fig = px.scatter_3d(
-            df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L", color_continuous_scale=px.colors.sequential.Turbo
+            df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L", color_continuous_scale=px.colors.sequential.ice
         )
         st.plotly_chart(fig)
 
     with Raw_Plots_tab:
         st.markdown('<p class="styled-subheader">Raw Data</p>', unsafe_allow_html=True)
         st.dataframe(df)
+
 
 # Function for Predictive Analysis
 def predictive_analysis():
@@ -341,8 +368,24 @@ def predictive_analysis():
             predict_fish_kill(dummy_df)
 
 
+# Function for Comparative Analysis
 def comparative_analysis():
     st.markdown('<p class="styled-subheader">Comparative Analysis: March 2024 - October 2024</p>', unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <style>
+        .info-container {
+            background-color: #f7f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     # File uploader for data files
     uploaded_files = st.file_uploader(
@@ -361,92 +404,158 @@ def comparative_analysis():
         temp_df = pd.read_csv(file)
         combined_df = pd.concat([combined_df, temp_df], ignore_index=True)
 
-    # Ensure 'Date' column exists and filter for the date range
-    if 'Date' in combined_df.columns:
-        combined_df['Date'] = pd.to_datetime(combined_df['Date'])
+        # Ensure 'Date' or 'Date (MM/DD/YYYY)' column exists and filter for the date range
+        # Check for the correct date column
+        if 'Date' in combined_df.columns:
+            date_column = 'Date'
+        elif 'Date (MM/DD/YYYY)' in combined_df.columns:
+            date_column = 'Date (MM/DD/YYYY)'
+        else:
+            st.error("The uploaded data must include a 'Date' or 'Date (MM/DD/YYYY)' column.")
+            return
+
+        # Ensure the date column is properly parsed
+        combined_df[date_column] = pd.to_datetime(combined_df[date_column], errors='coerce')
         filtered_df = combined_df[
-            (combined_df['Date'] >= '2024-03-01') & (combined_df['Date'] <= '2024-10-31')
-        ]
-    else:
-        st.error("The uploaded data must include a 'Date' column.")
+            (combined_df[date_column] >= '2024-03-01') & (combined_df[date_column] <= '2024-10-31')
+            ]
+
+        if filtered_df.empty:
+            st.warning("No data available for the specified date range.")
+            return
+
+        # Rename date column for consistency
+        filtered_df = filtered_df.rename(columns={date_column: 'Date'})
+
+    # Focus on the four key parameters
+    key_parameters = ['ODO mg/L', 'pH', 'Chlorophyll RFU']
+    available_columns = [col for col in key_parameters if col in filtered_df.columns]
+    if not available_columns:
+        st.error("The uploaded data does not contain the required parameters: ODO mg/L, pH, Chlorophyll RFU.")
         return
+    filtered_df = filtered_df[['Date', 'Latitude', 'Longitude', 'Depth m'] + available_columns]
 
-    if filtered_df.empty:
-        st.warning("No data available for the specified date range.")
-        return
+    # Handle invalid depth values (e.g., negative values)
+    if 'Depth m' in filtered_df.columns:
+        filtered_df = filtered_df[filtered_df['Depth m'] >= 0]  # Filter out negative depths
 
-    # Sidebar metrics for all numeric columns
-    st.sidebar.markdown("<h3>Summary Statistics</h3>", unsafe_allow_html=True)
-    numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
-    for column in numeric_columns:
-        st.sidebar.markdown(
-            f"<div class='metric-box'>{column}<br><span style='font-size: 1.2rem;'>{filtered_df[column].mean():.2f}</span></div>",
-            unsafe_allow_html=True,
-        )
+    # Dropdown for Month Selection
+    filtered_df['Month'] = filtered_df['Date'].dt.strftime('%B %Y')
+    selected_month = st.selectbox(
+        "Select a month to view data:",
+        options=filtered_df['Month'].unique(),
+    )
+    month_data = filtered_df[filtered_df['Month'] == selected_month]
 
-    # Dataframe Preview
-    st.markdown('<p class="styled-subheader">Filtered Dataset Preview</p>', unsafe_allow_html=True)
-    st.dataframe(filtered_df)
+    # Dataframe Preview for Selected Month
+    st.markdown(f'<p class="styled-subheader">Dataset for {selected_month}</p>', unsafe_allow_html=True)
+    st.dataframe(month_data)
 
-    # Visualizations for All Numeric Columns
-    st.markdown('<p class="styled-subheader">Comparative Analysis of Numeric Features</p>', unsafe_allow_html=True)
+    # Geospatial Depth Visualization
+    st.markdown(f'<p class="styled-subheader">Geospatial Depth Visualization</p>', unsafe_allow_html=True)
+    st.write(
+        "This visualization maps water depth measurements (`Depth m`) across geospatial coordinates, "
+        "leveraging the latitude and longitude of sampling locations. The size and color of the markers "
+        "indicate the depth values, allowing for easy identification of areas with shallow or deep water."
+    )
+    st.write(
+        "This plot is particularly useful for understanding the distribution of water depths across different "
+        "geographical areas. By focusing on specific months, it becomes possible to detect trends or anomalies "
+        "in water depth data over time."
+    )
 
-    # Line Plots for Trends
-    st.markdown('<p class="styled-subheader">Trend Analysis</p>', unsafe_allow_html=True)
-    for column in numeric_columns:
-        fig = px.line(
-            filtered_df,
-            x='Date',
-            y=column,
-            title=f"{column} Trend (March 2024 - October 2024)",
-            template="plotly_white",
-            labels={'Date': 'Date', column: column},
+    if 'Latitude' in month_data.columns and 'Longitude' in month_data.columns and 'Depth m' in month_data.columns:
+        fig = px.scatter_mapbox(
+            month_data,
+            lat='Latitude',
+            lon='Longitude',
+            color='Depth m',
+            size='Depth m',
+            color_continuous_scale="Viridis",
+            size_max=15,
+            zoom=6,
+            mapbox_style="carto-positron",
+            title=f"Geo-Depth Map for {selected_month}",
         )
         st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning(
+            "The dataset must contain 'Latitude', 'Longitude', and 'Depth m' columns for geospatial visualization.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Monthly Averages Visualization
+    st.markdown(f'<p class="styled-subheader">Monthly Averages</p>', unsafe_allow_html=True)
+    st.write(
+        "This bar chart illustrates the monthly average values for the three key water quality parameters: "
+        "`ODO mg/L`, `pH`, and `Chlorophyll RFU`. Aggregated averages provide a high-level view of parameter"
+        "variations over time, helping to identify seasonal patterns or consistent trends."
+    )
+    st.write(
+        "By comparing the relative values of different parameters, stakeholders can assess the health of water bodies "
+        "and evaluate whether specific months exhibit unusual behavior that warrants further investigation."
+    )
+
+    monthly_avg = filtered_df.groupby('Month')[available_columns].mean().reset_index()
+    avg_fig = px.bar(
+        monthly_avg,
+        x='Month',
+        y=available_columns,
+        title="Key Parameters",
+        template="plotly_white",
+        barmode='group',
+    )
+    st.plotly_chart(avg_fig, use_container_width=True)
 
     # Correlation Heatmap
-    st.markdown('<p class="styled-subheader">Correlation Heatmap</p>', unsafe_allow_html=True)
-    corr = filtered_df[numeric_columns].corr()
+    st.markdown(f'<p class="styled-subheader">Correlation Heatmap</p>', unsafe_allow_html=True)
+    st.write(
+        "This heatmap visualizes the correlations between the three key water quality parameters for the selected "
+        "month."
+        "Positive correlations (closer to 1) indicate that two parameters tend to increase together, while negative "
+        "correlations (closer to -1) suggest an inverse relationship."
+    )
+    st.write(
+        "Understanding these relationships is crucial for identifying interdependencies between parameters, which can "
+        "inform water quality management strategies. For example, a strong correlation between `pH` and `ODO mg/L` may "
+        "point to biochemical processes affecting oxygen levels in the water."
+    )
+
+    corr = month_data[available_columns].corr()
     fig, ax = plt.subplots(figsize=(10, 8))
     sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
-    plt.title("Correlation Between Factors")
+    plt.title(f"Correlation Between Parameters in {selected_month}")
     st.pyplot(fig)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Comparative Boxplots
-    st.markdown('<p class="styled-subheader">Boxplots for Distribution Analysis</p>', unsafe_allow_html=True)
-    for column in numeric_columns:
+    # Boxplots for Key Parameters
+    st.markdown('<h3 class="styled-subheader">Boxplots for Distribution Analysis</h3>', unsafe_allow_html=True)
+    st.write(
+        "Boxplots provide insights into the distribution of each key parameter, highlighting variability, median values, "
+        "and potential outliers. The height of each box represents the interquartile range (IQR), which contains the middle "
+        "50% of the data points."
+    )
+    st.write(
+        "Outliers, shown as individual points outside the whiskers, are particularly useful for detecting anomalies in the data. "
+        "For instance, extreme values of `Chlorophyll RFU` could indicate localized algal blooms or other environmental events."
+    )
+
+    for column in available_columns:
         fig = px.box(
-            filtered_df,
+            month_data,
             y=column,
-            title=f"Distribution of {column}",
+            title=f"Distribution of {column} in {selected_month}",
             template="plotly_white",
             labels={column: column},
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    # Variance Analysis
-    st.markdown('<p class="styled-subheader">Variance Across Datasets</p>', unsafe_allow_html=True)
-    variance_df = filtered_df.groupby(filtered_df['Date'].dt.month)[numeric_columns].var()
-    st.dataframe(variance_df)
-
-    # Scatter Matrix for Relationships
-    st.markdown('<p class="styled-subheader">Scatter Matrix for Feature Relationships</p>', unsafe_allow_html=True)
-    scatter_matrix_fig = px.scatter_matrix(
-        filtered_df,
-        dimensions=numeric_columns,
-        color='Date',
-        title="Scatter Matrix of All Numeric Features",
-        template="plotly_white",
-    )
-    st.plotly_chart(scatter_matrix_fig, use_container_width=True)
-
     # Summary of Observations
     st.markdown('<p class="styled-subheader">Summary of Observations</p>', unsafe_allow_html=True)
     st.write(
-        "The comparative analysis provides insights into the trends, relationships, and variabilities "
-        "of water quality parameters across the specified date range (March 2024 - October 2024)."
+        f"The analysis focuses on four key parameters: ODO mg/L, pH, Temp ºC, and Chlorophyll RFU, "
+        f"providing insights into their trends, relationships, and monthly variations. Additionally, geospatial mapping "
+        f"of depth measurements ('Depth m') provides a visual understanding of water depths across different locations."
     )
-
 
 
 # Display the selected section
