@@ -27,6 +27,7 @@ st.markdown(
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             font-family: "Consolas", monospace;
+            animation: fadeIn 1.5s ease-in-out;
         }
         .section-header {
             font-size: 2.5rem;
@@ -79,6 +80,17 @@ st.markdown(
         .back-to-top a:hover {
             color: #005f73;
             text-decoration: underline;
+        }
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
     """,

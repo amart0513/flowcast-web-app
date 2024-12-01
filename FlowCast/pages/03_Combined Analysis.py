@@ -27,6 +27,7 @@ st.markdown(
             margin-bottom: 30px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             font-family: "Consolas", monospace;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         /* Sidebar Styling */
@@ -99,6 +100,17 @@ st.markdown(
             border: 2px solid #005f73;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
     """,
