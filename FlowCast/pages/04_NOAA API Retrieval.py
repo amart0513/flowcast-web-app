@@ -177,8 +177,7 @@ def render_API():
         valid_data = df_api['WTMP'].dropna()
         if not valid_data.empty:
             # Create a line chart using matplotlib
-            st.markdown('<div class="section-container">', unsafe_allow_html=True)
-            st.markdown(f'<div class="styled-subheader">Water Temperature at {selected_station}</div>',
+            st.markdown(f'<div class="styled-subheader">Key Data Points at {selected_station}''</div>',
                         unsafe_allow_html=True)
             plt.figure(figsize=(10, 5))
             plt.plot(valid_data.index, valid_data, marker='o', linestyle='-', color='b')
