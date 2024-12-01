@@ -3,6 +3,7 @@ import streamlit as st
 # Define images
 IMAGE1 = "media/boat1.jpg"
 IMAGE2 = "media/boat2.jpg"
+IMAGE3 = "media/group-pic.jpeg"
 
 # Page configuration
 st.set_page_config(
@@ -16,6 +17,26 @@ st.set_page_config(
         "About": "FlowCast is a real-time water monitoring and prediction app.",
     },
 )
+
+# Custom CSS for Responsive Images and Rounded Corners
+st.markdown(
+    """
+    <style>
+        .responsive-image {
+            max-width: 100%; /* Ensures the image fits the container width */
+            height: auto;    /* Maintains aspect ratio */
+            border-radius: 20px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for enhanced appearance */
+        }
+        .image-container {
+            text-align: center; /* Centers the image in its container */
+            margin: 20px 0; /* Adds spacing around the image */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Custom CSS for Styling and Sidebar
 st.markdown(
@@ -198,18 +219,32 @@ with tab1:
             By focusing on location-specific datasets, we significantly improved predictive model performance, enabling 
             timely forecasts for water quality issues that impact marine life and human health.
             </p>
+            <p>
+            By employing machine learning models, we were able to process and analyze large-scale datasets in real-time,
+            enabling predictive insights into water quality trends. The project’s methodology included advanced data 
+            preprocessing techniques such as feature scaling, data imputation, and cross-validation to ensure the models
+            remained robust and unbiased. Additionally, we incorporated geospatial data, which enhanced the accuracy of
+            predictions by accounting for location-based variations in water quality indicators.
+            </p>
+            <p>
+            This data-driven approach significantly improved predictive model performance compared to traditional water
+            quality analysis methods. The result is a highly reliable system capable of timely forecasts for potential 
+            water quality issues, such as harmful algal blooms, hypoxia, or elevated pollutant levels. These predictions
+            have immediate applications in safeguarding marine life, supporting fisheries, and protecting human health 
+            by ensuring the water is safe for recreational activities.
+            </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
 with tab2:
-    st.image(IMAGE1, caption="The Heron collecting data from the FIU lake by Parking Garage 6 (PG-6).", use_container_width=True)
+    st.image(IMAGE1, caption="The Heron collecting data from the FIU lake by Parking Garage 6 (PG-6).", use_column_width=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # Data Collection Section with Tabs
-st.markdown('<h2 class="section-header">Data Collection Process</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="section-header">Our Mission</h2>', unsafe_allow_html=True)
 tab3, tab4 = st.columns([2, 1])
 
 with tab3:
@@ -217,10 +252,19 @@ with tab3:
         """
         <div class="card">
             <p>
-            Using advanced sensors and automated systems, we gathered comprehensive datasets including temperature, pH, 
-            dissolved oxygen, and nutrient concentrations. Each measurement was paired with precise GPS coordinates for 
-            geospatial accuracy. Our machine learning models underwent rigorous training with techniques like feature scaling 
-            and cross-validation to ensure high precision and minimal biases.
+            Our mission is to revolutionize water quality monitoring and prediction by leveraging advanced technology 
+            and data-driven insights. We aim to protect aquatic ecosystems and human health by providing real-time, 
+            accurate, and actionable information about water quality conditions. Through cutting-edge sensors, geospatial 
+            accuracy, and machine learning models, we seek to address the unique environmental challenges faced by 
+            Biscayne Bay and Haulover Beach.
+            </p>
+            <p>
+            By collecting and analyzing comprehensive datasets that include key parameters such as temperature, pH, 
+            dissolved oxygen, and nutrient concentrations, our goal is to create a robust system capable of predicting 
+            and mitigating water quality issues. Each measurement is paired with precise GPS coordinates, ensuring 
+            location-specific insights that empower communities, policymakers, and environmental agencies to make informed 
+            decisions. Our mission is not only to safeguard marine life but also to contribute to the sustainability of 
+            our planet's most vital resource—water.
             </p>
         </div>
         """,
@@ -228,8 +272,9 @@ with tab3:
     )
 
 with tab4:
-    st.image(IMAGE2, caption="Our boat being prepared for a Biscayne Bay mission to collect data and provide updates "
-                             "on the quality of the ocean.", use_container_width=True)
+    #st.image(IMAGE2, caption="Our boat being prepared for a Biscayne Bay mission to collect data and provide updates "
+                            # "on the quality of the ocean.", use_column_width=True)
+    st.image(IMAGE3, caption="Dr. Reis and the students who participated in the Oct. 25 "
+                             "mission at the Biscayne Bay Campus.", use_column_width=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)

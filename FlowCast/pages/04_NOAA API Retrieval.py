@@ -148,7 +148,7 @@ def render_API():
         '41122': 'Hollywood Beach, FL',
         '41114': 'Fort Pierce, FL',
         '41010': 'Cape Canaveral, FL',
-        '42036': 'Tampa, FL',
+        '41117': 'St. Augustine, FL',
         '41070': 'Daytona Beach, FL'
     }
 
