@@ -251,7 +251,7 @@ with tabs[0]:
         st.markdown('<p class="styled-subheader">Jesus Elespuru</p>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Role:</strong> Product Owner, Back-End Developer & Hardware Designer<br>
                 <strong>University:</strong> Florida International University<br>
                 <strong>College:</strong> Knight Foundation School of Computing and Information Sciences<br>
@@ -263,7 +263,7 @@ with tabs[0]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Experience:</strong><br>
                 Jesus brings years of experience in back-end development and hardware design, specializing in systems integration 
                 and performance optimization. With a solid understanding of APIs, databases, and IoT devices, he excels in creating 
@@ -275,12 +275,12 @@ with tabs[0]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Contributions:</strong><br>
-                - Developed and optimized the server-side architecture for real-time data processing.<br>
-                - Designed hardware components to ensure reliable integration with software systems.<br>
-                - Built custom API solutions for seamless data communication.<br>
-                - Collaborated with team members to test and debug the hardware for varied conditions.
+                <li>Developed and optimized the server-side architecture for real-time data processing.<br></li>
+                <li>Designed hardware components to ensure reliable integration with software systems.<br></li>
+                <li>Built custom API solutions for seamless data communication.<br></li>
+                <li>Collaborated with team members to test and debug the hardware for varied conditions.</li>
             </div>
             """,
             unsafe_allow_html=True,
@@ -296,8 +296,8 @@ with tabs[1]:
         st.markdown('<p class="styled-subheader">Angie Martinez</p>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
-                <strong>Role:</strong> Team Lead, Full-Stack Developer, Software Designer & Project Manager<br>
+            <div class="card">
+                <strong>Role:</strong> Team Lead, Full-Stack Developer, & Software Designer<br>
                 <strong>University:</strong> Florida International University<br>
                 <strong>College:</strong> Knight Foundation School of Computing and Information Sciences<br>
                 <strong>Major:</strong> Computer Science, B.S.
@@ -308,10 +308,9 @@ with tabs[1]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Experience:</strong><br>
-                Angie has extensive experience in software design and full-stack development. She has a track record of delivering 
-                user-friendly applications with optimized back-end systems. Her leadership experience spans multiple collaborative projects.
+                Angie is a highly skilled software designer and full-stack developer, adept at building robust, scalable applications. With a deep understanding of both front-end and back-end technologies, she has successfully led teams through complex projects, ensuring seamless integration of features, performance optimization, and user-centric designs.
             </div>
             """,
             unsafe_allow_html=True,
@@ -319,17 +318,19 @@ with tabs[1]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Contributions:</strong><br>
-                - Designed FlowCast's user-friendly interface.<br>
-                - Created back-end systems for efficient data processing.<br>
-                - Led the team as project manager.<br>
-                - Conducted extensive testing to ensure application stability.<br>
-                - Championed FlowCast's vision and aligned team efforts.
+                <li>Designed FlowCast’s intuitive user interface that balances aesthetic appeal with functionality.<br></li>
+                <li>Architected and developed robust back-end systems using Python, MongoDB, and Streamlit to ensure seamless data processing and real-time visualizations.<br></li>
+                <li>Drove collaboration across team members, defining project milestones, and ensuring on-time delivery.<br></li>
+                <li>Implemented front-end components using HTML, CSS, and JavaScript, delivering a responsive and dynamic user experience.<br></li>
+                <li>Spearheaded testing efforts to maintain the application's stability and functionality, guaranteeing top-tier performance.<br></li>
+                <li>Championed FlowCast’s vision, aligning team efforts towards a unified goal, while continuously innovating and enhancing the app’s capabilities.</li>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
 
 # Repeat similar structure for Steven and Christopher
 # Steven Luque
@@ -342,7 +343,7 @@ with tabs[2]:
         st.markdown('<p class="styled-subheader">Steven Luque</p>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Role:</strong> Hardware Designer & Wiring Integration Specialist<br>
                 <strong>University:</strong> Florida International University<br>
                 <strong>College:</strong> Knight Foundation School of Computing and Information Sciences<br>
@@ -354,7 +355,7 @@ with tabs[2]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Experience:</strong><br>
                 Steven is an experienced hardware designer with expertise in IoT devices and embedded systems. His hands-on approach 
                 has enabled him to troubleshoot and refine designs for optimal performance in demanding environments. He specializes 
@@ -366,13 +367,13 @@ with tabs[2]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Contributions:</strong><br>
-                - Designed and implemented the wiring system that connected FlowCast's sensors and devices.<br>
-                - Conducted rigorous testing of hardware configurations to ensure durability and reliability.<br>
-                - Researched and sourced cost-effective hardware solutions that met project specifications.<br>
-                - Enhanced system efficiency by fine-tuning wiring configurations.<br>
-                - Ensured hardware outputs aligned seamlessly with software requirements.
+                <li>Designed and implemented the wiring system that connected FlowCast's sensors and devices.<br></li>
+                <li>Conducted rigorous testing of hardware configurations to ensure durability and reliability.<br></li>
+                <li>Researched and sourced cost-effective hardware solutions that met project specifications.<br></li>
+                <li>Enhanced system efficiency by fine-tuning wiring configurations.<br></li>
+                <li>Ensured hardware outputs aligned seamlessly with software requirements.</li>
             </div>
             """,
             unsafe_allow_html=True,
@@ -388,7 +389,7 @@ with tabs[3]:
         st.markdown('<p class="styled-subheader">Christopher Perez</p>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Role:</strong> Mathematics & Circuit Analysis<br>
                 <strong>University:</strong> Florida International University<br>
                 <strong>College:</strong> Knight Foundation School of Computing and Information Sciences<br>
@@ -400,10 +401,13 @@ with tabs[3]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Experience:</strong><br>
-                Christopher has a strong background in mathematics and circuit analysis. His expertise lies in optimizing electrical 
-                systems for energy efficiency and data accuracy. His analytical mindset ensures precision in data collection and system performance.
+                Christopher possesses a robust foundation in advanced mathematics and circuit analysis, coupled with a 
+                deep understanding of electrical systems. He excels in optimizing complex electrical systems, 
+                focusing on maximizing energy efficiency, precision, and data accuracy. With a sharp analytical mindset,
+                Christopher consistently ensures the integrity of data collection processes and fine-tunes system 
+                performance for optimal reliability and scalability. 
             </div>
             """,
             unsafe_allow_html=True,
@@ -411,13 +415,13 @@ with tabs[3]:
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         st.markdown(
             """
-            <div class="info-container">
+            <div class="card">
                 <strong>Contributions:</strong><br>
-                - Analyzed and optimized FlowCast's circuit designs for accurate sensor readings.<br>
-                - Applied advanced mathematical models to validate data reliability.<br>
-                - Designed energy-efficient circuit solutions to extend hardware life.<br>
-                - Debugged and refined sensors to ensure accuracy under varying environmental conditions.<br>
-                - Collaborated with hardware and software teams to integrate sensor outputs into analytics.
+                <li>Analyzed and optimized FlowCast's circuit designs for accurate sensor readings.<br></li>
+                <li>Applied advanced mathematical models to validate data reliability.<br></li>
+                <li>Designed energy-efficient circuit solutions to extend hardware life.<br></li>
+                <li>Debugged and refined sensors to ensure accuracy under varying environmental conditions.<br></li>
+                <li>Collaborated with hardware and software teams to integrate sensor outputs into analytics.</li>
             </div>
             """,
             unsafe_allow_html=True,
