@@ -25,7 +25,7 @@ This project is a water quality predictor built using Python, HTML, CSS, JavaScr
 
 ## Installation Guide
 
-### Option 1: Set up locally via Command Line
+## Option 1: Set up locally via Command Line
 Open your terminal (or command prompt) and execute the following commands:
 
 ### 1. Clone the repository
@@ -38,8 +38,7 @@ cd flowcast-web-app
 - Windows: Use python commands.
 - macOS/Linux: Use python3 or python based on your setup.
 
-### 3. Create a virtual environment (optional but highly recommended):
-python -m venv venv
+### 3. Create a virtual environment (optional but highly recommended): python -m venv venv
 
 #### Activate the environment
 **Windows**
@@ -49,14 +48,10 @@ venv\Scripts\activate
 source venv/bin/activate
 
 #### 4. Install Required Dependencies
-Install all required Python packages:
-
-pip install -r requirements.txt
+Install all required Python packages: pip install -r requirements.txt
 
 #### 5. Run the Streamlit App
-Start the app by running the following command:
-
-streamlit run app.py
+Start the app by running the following command: streamlit run app.py
 
 #### 6. Access the App
 Once the app starts, you will see this in the terminal:
@@ -68,7 +63,55 @@ You can now view your Streamlit app in your browser.
 
 Open it in your browser to view the app.
 
+## Option 2: Set Up via GitHub Desktop
+### 1. Clone the Repository Using GitHub Desktop
+a. Open GitHub Desktop.
+b. Click on File > Clone Repository....
+c. Select the repository:
+    * If the repository is listed under your GitHub account, choose it.
+    * If it's not listed, click the URL tab and enter the repository URL: https://github.com/your-username/flowcast-web-app.git
+d. Choose a local path for the repository and click Clone.
 
+### 2. Navigate to the Repository Folder
+After cloning, open the folder in your terminal or command prompt: cd <path-to-your-local-repo>
+
+### 3. Set Up Your Environment
+Create a virtual environment (recommended): python -m venv venv
+
+Activate the environment: 
+**Windows**
+venv\Scripts\activate
+
+**macOS/Linux**
+source venv/bin/activate
+
+### 4. Install Dependencies
+Install all required Python packages: pip install -r requirements.txt
+
+### 5. Run the Streamlit App
+Start the app by running the following command: streamlit run app.py
+
+## Notes for All Operating Systems
+
+**Prerequisites**
+1. Git: Install Git from git-scm.com (if not already installed).
+2. Python: Make sure Python 3.7 or later is installed. You can download it from python.org.
+3. Pip: Pip is included with Python; ensure it’s up to date: python -m pip install --upgrade pip
+4. Deactivate Virtual Environment: To deactivate your virtual environment: deactivate
+
+**Troubleshooting**
+If you encounter errors during dependency installation: pip install --upgrade pip setuptools wheel
+    Then retry: pip install -r requirements.txt
+
+* For permission issues on macOS/Linux, use: sudo pip install -r requirements.txt
+
+## About
+
+Developed as part of the Flowcast Project to enable seamless water quality analysis using intuitive web-based visualizations.
+### Key Features:
+1. **Ready-to-use Markdown**: Includes code blocks and formatting that is compatible with GitHub's rendering.
+2. **Comprehensive Instructions**: Covers both command-line and GitHub Desktop setups for all major operating systems.
+3. **Troubleshooting Section**: Provides solutions for common issues during installation.
 
 ## How It Works
 
