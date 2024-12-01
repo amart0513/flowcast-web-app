@@ -74,7 +74,7 @@ st.markdown(
 )
 
 # Banner Title
-st.markdown('<div class="hero-title">FlowCast: Data and Predictive Analysis</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-title">FlowCast: Combined Analysis</div>', unsafe_allow_html=True)
 
 # Dropdown for Navigation
 section = st.selectbox(
@@ -341,8 +341,118 @@ def predictive_analysis():
             predict_fish_kill(dummy_df)
 
 
+def comparative_analysis():
+    st.markdown('<p class="styled-subheader">Comparative Analysis: March 2024 - October 2024</p>', unsafe_allow_html=True)
+
+    # File uploader for data files
+    uploaded_files = st.file_uploader(
+        "Upload water quality data files (March 2024 - October 2024)",
+        type=["csv"],
+        accept_multiple_files=True,
+    )
+
+    if not uploaded_files:
+        st.info("Please upload CSV files for analysis.")
+        return
+
+    # Combine uploaded files into a single DataFrame
+    combined_df = pd.DataFrame()
+    for file in uploaded_files:
+        temp_df = pd.read_csv(file)
+        combined_df = pd.concat([combined_df, temp_df], ignore_index=True)
+
+    # Ensure 'Date' column exists and filter for the date range
+    if 'Date' in combined_df.columns:
+        combined_df['Date'] = pd.to_datetime(combined_df['Date'])
+        filtered_df = combined_df[
+            (combined_df['Date'] >= '2024-03-01') & (combined_df['Date'] <= '2024-10-31')
+        ]
+    else:
+        st.error("The uploaded data must include a 'Date' column.")
+        return
+
+    if filtered_df.empty:
+        st.warning("No data available for the specified date range.")
+        return
+
+    # Sidebar metrics for all numeric columns
+    st.sidebar.markdown("<h3>Summary Statistics</h3>", unsafe_allow_html=True)
+    numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
+    for column in numeric_columns:
+        st.sidebar.markdown(
+            f"<div class='metric-box'>{column}<br><span style='font-size: 1.2rem;'>{filtered_df[column].mean():.2f}</span></div>",
+            unsafe_allow_html=True,
+        )
+
+    # Dataframe Preview
+    st.markdown('<p class="styled-subheader">Filtered Dataset Preview</p>', unsafe_allow_html=True)
+    st.dataframe(filtered_df)
+
+    # Visualizations for All Numeric Columns
+    st.markdown('<p class="styled-subheader">Comparative Analysis of Numeric Features</p>', unsafe_allow_html=True)
+
+    # Line Plots for Trends
+    st.markdown('<p class="styled-subheader">Trend Analysis</p>', unsafe_allow_html=True)
+    for column in numeric_columns:
+        fig = px.line(
+            filtered_df,
+            x='Date',
+            y=column,
+            title=f"{column} Trend (March 2024 - October 2024)",
+            template="plotly_white",
+            labels={'Date': 'Date', column: column},
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Correlation Heatmap
+    st.markdown('<p class="styled-subheader">Correlation Heatmap</p>', unsafe_allow_html=True)
+    corr = filtered_df[numeric_columns].corr()
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
+    plt.title("Correlation Between Factors")
+    st.pyplot(fig)
+
+    # Comparative Boxplots
+    st.markdown('<p class="styled-subheader">Boxplots for Distribution Analysis</p>', unsafe_allow_html=True)
+    for column in numeric_columns:
+        fig = px.box(
+            filtered_df,
+            y=column,
+            title=f"Distribution of {column}",
+            template="plotly_white",
+            labels={column: column},
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Variance Analysis
+    st.markdown('<p class="styled-subheader">Variance Across Datasets</p>', unsafe_allow_html=True)
+    variance_df = filtered_df.groupby(filtered_df['Date'].dt.month)[numeric_columns].var()
+    st.dataframe(variance_df)
+
+    # Scatter Matrix for Relationships
+    st.markdown('<p class="styled-subheader">Scatter Matrix for Feature Relationships</p>', unsafe_allow_html=True)
+    scatter_matrix_fig = px.scatter_matrix(
+        filtered_df,
+        dimensions=numeric_columns,
+        color='Date',
+        title="Scatter Matrix of All Numeric Features",
+        template="plotly_white",
+    )
+    st.plotly_chart(scatter_matrix_fig, use_container_width=True)
+
+    # Summary of Observations
+    st.markdown('<p class="styled-subheader">Summary of Observations</p>', unsafe_allow_html=True)
+    st.write(
+        "The comparative analysis provides insights into the trends, relationships, and variabilities "
+        "of water quality parameters across the specified date range (March 2024 - October 2024)."
+    )
+
+
+
 # Display the selected section
 if section == "Data Analysis":
     data_analysis()
 elif section == "Predictive Analysis":
     predictive_analysis()
+elif section == "Comparative Analysis":
+    comparative_analysis()
