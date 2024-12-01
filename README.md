@@ -31,17 +31,17 @@ Open your terminal (or command prompt) and execute the following commands:
 ### 1. Clone the repository
 git clone https://github.com/your-username/flowcast-web-app.git
 
-#### Navigate into the project directory
+#### Navigate into the Project Directory
 cd flowcast-web-app
 
 ### 2. Set Up Your Environment
 - Windows: Use python commands.
 - macOS/Linux: Use python3 or python based on your setup.
 
-### 3. Create a virtual environment (optional but highly recommended): 
+### 3. Create a Virtual Environment (optional but highly recommended): 
 - python -m venv venv
 
-### 4. Activate the environment:
+### 4. Activate the Environment
 - **Windows**: venv\Scripts\activate
 
 - **macOS\Linux**: source venv/bin/activate
@@ -63,13 +63,11 @@ Open it in your browser to view the app.
 
 ## Option 2: Set Up via GitHub Desktop
 ### 1. Clone the Repository Using GitHub Desktop
-a. Open GitHub Desktop. Click on File > Clone Repository.... 
+a. Open GitHub Desktop. Then, press Click on File > Clone Repository.... 
 
-b. Select the repository:
-    - If the repository is listed under your GitHub account, choose it.
-    - If it's not listed, click the URL tab and enter the repository URL: https://github.com/your-username/flowcast-web-app.git. 
+b. Select the repository: If the repository is listed under your GitHub account, choose it. If it's not listed, click the URL tab and enter the repository URL: https://github.com/your-username/flowcast-web-app.git. 
     
-c. Choose a local path for the repository and click Clone.
+c. Choose a local path for the repository and click **Clone**.
 
 ### 2. Navigate to the Repository Folder
 After cloning, open the folder in your terminal or command prompt: cd <path-to-your-local-repo>
@@ -77,18 +75,25 @@ After cloning, open the folder in your terminal or command prompt: cd <path-to-y
 ### 3. Set Up Your Environment
 Create a virtual environment (recommended): python -m venv venv
 
-Activate the environment: 
-**Windows**
-venv\Scripts\activate
+### 4. Activate the Environment
+- **Windows**: venv\Scripts\activate
 
-**macOS/Linux**
-source venv/bin/activate
+- **macOS\Linux**: source venv/bin/activate
 
-### 4. Install Dependencies
+### 5. Install Dependencies
 Install all required Python packages: pip install -r requirements.txt
 
-### 5. Run the Streamlit App
+### 6. Run the Streamlit App
 Start the app by running the following command: streamlit run app.py
+
+### 7. Access the App
+Once the app starts, you will see this in the terminal:
+
+You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:XXXX
+  
+Open it in your browser to view the app.
 
 ## Notes for All Operating Systems
 
