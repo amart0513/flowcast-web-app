@@ -184,23 +184,25 @@ def raw_data(df):
 
 # Function to render data from NOAA API
 def render_API():
-    # Sidebar for station selection
-    #stations = {
-        #'41122': 'Hollywood Beach, FL',
-        #'41114': 'Fort Pierce, FL',
-       # '41010': 'Cape Canaveral, FL',
-      #  '41117': 'St. Augustine, FL',
-     #   '41070': 'Daytona Beach, FL'
-    #}// Gulf of Mexico/ East of Florida
 
     # NOAA Regions and Stations
+    # only a small portion of selected data from the API -> want to expand this data globally
     regions_hierarchy = {
-        "Atlantic (Tropical)": {"NE Extension": "13001", "NE of Martinique": "41040"},
-        "Atlantic (West)": {"Bermuda": "41049", "St. Martin (island)": "41004"},
-        "Gulf of Mexico (East)/Florida": {"Hollywood Beach": "41122", "Daytona Beach": "41070", "Fort Pierce": "41114",
-                                          "Cape Canaveral": "41010", "St. Augustine":"41117"},
-        "USA-Southeast": {"Charleston, SC": "41004", "Cape Hatteras, SC": "41002", "Onslow Bay, NC":"41159"},
-        "USA-Southwest": {"San Diego": "46047"}
+        "Atlantic (Tropical)": {"Cape Verde": "13001", "Martinique": "41040"},
+
+        "Atlantic (West)": {"Bermuda": "41049", "St. Martin": "41004"},
+
+        "Gulf of Mexico (East)/Florida": {"Hollywood Beach, FL": "41122", "Daytona Beach, FL": "41070",
+                                          "Cape Canaveral, FL": "41010", "St. Augustine, FL":"41117"},
+
+        "USA-Southeast": {"Charleston, SC": "41004", "Cape Hatteras, SC": "41002",
+                          "Virginia Beach, VA": "44014", "Cape May, NJ": "44009"},
+
+        "USA-Southwest": {"San Diego, CA": "46047", "Montague Island, AK": "46076",
+                          "Santa Monica Bay, CA": "46221", "Port Orford, OR": "46015"},
+
+        "Caribbean Sea": {"Kingston, JM": "42058", "Cozumel, MX": "42056", "San Juan, PR": "41053",
+                          "St. John, VI": "41052"}
     }
 
     selected_region = st.sidebar.selectbox("Select Region", list(regions_hierarchy.keys()))
@@ -266,9 +268,6 @@ def render_API():
                 # Station Title
                 st.markdown(f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>', unsafe_allow_html=True)
 
-                # Raw data display
-                #raw_data(df_api)
-
                 # Display station info and raw data
                 st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
 
@@ -276,7 +275,7 @@ def render_API():
                 st.markdown("""
                     <div class="card">
                         <p style="color:#252323;">
-                            This section displays the raw data retrieved from the NOAA station. It shows individual observations and measurements 
+                            This raw data is retrieved from the NOAA station. It shows individual observations and measurements 
                             collected from the selected station, such as wind speed, wave height, temperature, and atmospheric pressure. 
                             The data is presented in tabular format, providing a detailed view of the recorded conditions at each observation time.
                             This raw data serves as the foundation for understanding the real-time conditions at the monitoring site and is useful for 
