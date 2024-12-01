@@ -254,7 +254,7 @@ with st.form("Registration", clear_on_submit=True):
     email = st.text_input("Email:")
     major = st.selectbox("Major:", options=MAJORS)
     level = st.selectbox("Degree Level:", options=["", "Undergrad", "Masters", "PhD", "Other"])
-    subscribe = st.checkbox("Do you want to know about future events?")
+    subscribe = st.checkbox("Do you want to know about future updates?")
     submit = st.form_submit_button("Submit")
     if (name and email and submit and subscribe and level) or (name and email and submit and level):
         st.success(f"{name}, {level} in {major}, is now registered")
@@ -264,5 +264,3 @@ with st.form("Registration", clear_on_submit=True):
         st.info("Please fill out the form.")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Divider for separation
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)

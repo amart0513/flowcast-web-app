@@ -427,22 +427,3 @@ with tabs[3]:
             unsafe_allow_html=True,
         )
 
-# Divider
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-
-# Closing Note
-st.write("The FlowCast team collaborated on every aspect of the project, from field data collection to designing and "
-         "deploying the application. Their shared expertise has brought FlowCast to life, enabling real-time water "
-         "quality insights for environmental preservation.")
-
-st.write("Through extensive teamwork, the group overcame numerous technical challenges, including integrating "
-         "cutting-edge sensor technology with robust machine learning models. By combining diverse skill sets in "
-         "software development, hardware design, mathematics, and project management, they created a seamless system "
-         "that bridges the gap between raw environmental data and actionable insights. This synergy underscores the "
-         "value of interdisciplinary collaboration in tackling real-world issues like water quality monitoring.")
-
-st.write("FlowCast’s innovative approach has the potential to make a lasting impact on marine ecosystems and coastal "
-         "communities. By providing accurate, real-time data, the platform empowers researchers, policymakers, "
-         "and local organizations to make informed decisions for sustainable resource management. Beyond its "
-         "technological achievements, FlowCast stands as a testament to what can be accomplished when passionate "
-         "individuals work together toward a shared vision for environmental preservation.")
