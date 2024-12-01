@@ -38,7 +38,8 @@ cd flowcast-web-app
 - Windows: Use python commands.
 - macOS/Linux: Use python3 or python based on your setup.
 
-### 3. Create a virtual environment (optional but highly recommended): python -m venv venv
+### 3. Create a virtual environment (optional but highly recommended): 
+python -m venv venv
 
 ### 4. Activate the environment:
 **Windows**
