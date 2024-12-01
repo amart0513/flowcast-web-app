@@ -59,10 +59,14 @@ Start the app by running the following command:
 streamlit run app.py
 
 #### 6. Access the App
-Once the app starts, you will see a URL in the terminal:
+Once the app starts, you will see this in the terminal:
 
+You can now view your Streamlit app in your browser.
 
+  Local URL: http://localhost:1234
+  Network URL: http://01.2.3.789:1234
 
+Open it in your browser to view the app.
 
 
 

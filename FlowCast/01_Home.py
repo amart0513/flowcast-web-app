@@ -41,7 +41,7 @@ st.markdown(
         /* Hero Section */
         .hero-section {
             position: relative;
-            background: linear-gradient(135deg, rgba(0, 95, 115, 0.9), rgba(10, 147, 150, 0.9)), url('media/FIU_Banner.png');
+            background: linear-gradient(135deg, rgba(0, 95, 115, 0.9), rgba(10, 147, 150, 0.9)), url('');
             background-size: cover;
             background-position: center;
             color: white;

@@ -233,7 +233,8 @@ def render_background():
     st.markdown('<div class="hero-title">Background</div>', unsafe_allow_html=True)
 
     # About the Project Section
-    st.markdown('<h2 class="section-header">About Our Project</h2>', unsafe_allow_html=True)
+    st.markdown(
+        "<h2 class=\"section-header\">About Our Project: Enhancing Environmental Monitoring with Python</h2>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
 
     with col1:
@@ -241,17 +242,37 @@ def render_background():
             """
             <div class="card">
                 <p>
-                Our project centered on the real-time analysis of water quality using advanced machine learning techniques,
-                specifically tailored for the unique environmental conditions of Biscayne Bay and Haulover Beach. The core of our approach
-                was the seamless integration of field data, collected directly from these two coastal locations, into our machine learning
-                models. This data included key water quality parameters such as pH levels, temperature, salinity, turbidity, and the presence
-                of harmful pollutants or bacteria.
+                Our project leverages <b>advanced machine learning techniques</b> to monitor and predict water quality in real-time, 
+                with a focus on <b>Biscayne Bay</b> and <b>Haulover Beach</b>. By tailoring models to these unique environments, 
+                we developed a robust system that provides actionable insights into aquatic conditions, benefiting both marine ecosystems 
+                and public health.
                 </p>
+                <ul>
+                    <li>
+                        <b>Location-Specific Dataset Integration:</b>  
+                        - Curated datasets uniquely relevant to Biscayne Bay and Haulover Beach, accounting for local environmental factors.  
+                        - This approach significantly improved predictive accuracy compared to generic models.
+                    </li>
+                    <li>
+                        <b>Machine Learning Models for Forecasting:</b>  
+                        - Trained models capable of detecting trends and anomalies in water quality metrics using Python libraries like 
+                          Scikit-learn and TensorFlow.  
+                        - Predictive capabilities allow stakeholders to respond proactively to potential threats such as <i>fish kills</i> or 
+                          <i>pollution spikes</i>.
+                    </li>
+                    <li>
+                        <b>Real-Time Data Integration:</b>  
+                        - Fetches live environmental data from APIs like NOAA, ensuring up-to-date analysis.  
+                        - Real-time updates visualized through interactive dashboards built with <b>Streamlit</b>.
+                    </li>
+                </ul>
                 <p>
-                By focusing on location-specific datasets, we were able to train our machine learning algorithms on highly relevant
-                and accurate information, which significantly improved the performance of our predictive models. The real-time aspect of the
-                analysis meant that the system could continuously update its predictions as new data became available, allowing it to forecast
-                future water quality conditions with remarkable precision.
+                By automating the data collection from the EXO2 sonde and providing a web interface for viewing both real-time and historical 
+                data, the system reduces manual effort, improves data accuracy, and enhances accessibility for researchers, technicians, or 
+                anyone involved in water quality monitoring. The project’s goal is to create a scalable solution that can be adapted for various 
+                environmental and scientific applications, promoting more efficient and informed decision-making in water quality management.
+                This Python-driven initiative not only underscores the potential of technology in environmental protection but also sets 
+                a precedent for how location-specific data can redefine the scope and efficacy of predictive analytics.
                 </p>
             </div>
             """,
@@ -273,17 +294,45 @@ def render_background():
             """
             <div class="card">
                 <p>
-                Throughout our expeditions, we utilized cutting-edge sensors and automated sampling systems to gather 
-                a comprehensive dataset on key water quality parameters, including temperature, pH, dissolved oxygen, and nutrient concentrations.
-                Each measurement was paired with precise GPS coordinates, ensuring that the data collected was both geospatially and
-                temporally accurate. This granular dataset laid the foundation for our machine learning model, enabling us to analyze
-                water quality patterns with fine detail and precision.
+                The data collection process for our project was meticulously designed to ensure precision, reliability, and relevance, laying a strong foundation 
+                for real-time water quality analysis and machine learning applications. By combining field measurements, external data sources, and advanced 
+                processing techniques, we achieved a comprehensive and scalable system.
                 </p>
+                <ul>
+                    <li>
+                        <b>Integration with High-Precision Sensors:</b>  
+                        - Employed the EXO2 sonde to measure critical parameters such as pH, temperature, salinity, turbidity, dissolved oxygen, and chlorophyll levels.  
+                        - Configured automated data logging intervals to capture continuous environmental fluctuations.  
+                        - Enhanced sensor performance with calibration routines to reduce measurement errors.
+                    </li>
+                    <li>
+                        <b>Real-Time API Data Streams:</b>  
+                        - Sourced live environmental data from NOAA and other reliable platforms to supplement physical measurements.  
+                        - Utilized APIs to gather additional metadata, such as weather conditions, tidal information, and historical records, enriching the dataset.  
+                        - Ensured synchronization between external and on-site data streams for seamless integration.
+                    </li>
+                    <li>
+                        <b>Rigorous Data Validation and Processing:</b>  
+                        - Implemented Python-based pipelines with libraries like Pandas and NumPy to clean, filter, and validate incoming data.  
+                        - Addressed missing values through imputation techniques and removed outliers using statistical thresholds.  
+                        - Conducted exploratory data analysis (EDA) to identify trends and anomalies in the collected data.
+                    </li>
+                    <li>
+                        <b>Data Storage and Accessibility:</b>  
+                        - Stored processed data in a local MongoDB database, enabling structured and efficient retrieval.  
+                        - Developed custom scripts to organize datasets by location, timestamp, and parameters for improved usability.  
+                        - Incorporated backup mechanisms to prevent data loss and ensure availability during system downtimes.
+                    </li>
+                    <li>
+                        <b>Scalability for Future Expansion:</b>  
+                        - Designed the system to accommodate additional sensors and new data streams as project requirements evolve.  
+                        - Ensured modularity in the collection process, enabling easy updates to hardware and software components.  
+                        - Established documentation for replicability, facilitating adoption by other environmental monitoring initiatives.
+                    </li>
+                </ul>
                 <p>
-                To prepare the data for machine learning training, we performed a thorough cleaning and preprocessing step, removing
-                any inconsistencies and outliers to ensure the integrity of the dataset. The processed data was then divided into training
-                and testing sets, with the training set used to fit our machine learning model. We employed techniques like feature scaling,
-                normalization, and cross-validation to optimize the model's performance and reduce potential biases.
+                Through this multi-faceted approach, our data collection process not only guarantees high-quality input for machine learning models but also 
+                positions the project as a scalable and impactful solution for water quality monitoring and environmental conservation.
                 </p>
             </div>
             """,
@@ -296,15 +345,41 @@ def render_background():
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
     # Insights Section
+    # Insights Section
     st.markdown('<h2 class="section-header">Real-Time Insights</h2>', unsafe_allow_html=True)
     st.markdown(
         """
         <div class="card">
             <p>
-            Real-time data from NOAA’s API was also integrated into the dataset, providing up-to-date environmental variables
-            for continuous model refinement. Alongside the raw data, we documented geographical features, marine life, and human activities
-            in the study areas through photographs and videos. These visuals not only enriched the understanding of water quality trends
-            but also served as powerful tools for community engagement and awareness regarding conservation efforts.
+            The integration of <b>real-time data streams</b> from NOAA’s API allowed us to incorporate up-to-date environmental variables, 
+            such as water temperature, salinity, tidal levels, and weather conditions, directly into our predictive models. This seamless 
+            integration ensured that our system remained dynamic, continuously adapting to the most current environmental changes.
+            </p>
+            <ul>
+                <li>
+                    <b>Dynamic Model Refinement:</b>  
+                    - Real-time data empowered our machine learning models to evolve continuously by retraining on the latest environmental inputs.  
+                    - This adaptability significantly enhanced predictive accuracy, particularly during rapidly changing conditions.
+                </li>
+                <li>
+                    <b>Visual Documentation and Analysis:</b>  
+                    - Captured photographs and videos of study areas to document geographical features, marine life behaviors, and human activities.  
+                    - These visuals provided context for data-driven insights and highlighted the impact of environmental changes on local ecosystems.
+                </li>
+                <li>
+                    <b>Community Engagement and Awareness:</b>  
+                    - Leveraged visual content to create compelling narratives for public outreach, fostering awareness about water quality issues.  
+                    - Designed interactive dashboards to make real-time insights accessible to stakeholders, from environmental scientists to local communities.
+                </li>
+                <li>
+                    <b>Actionable Insights for Conservation:</b>  
+                    - Delivered timely forecasts of water quality metrics, enabling proactive measures to mitigate risks such as pollution spikes or marine habitat disruptions.  
+                    - Provided data-driven recommendations for policy makers and conservationists, enhancing resource management efforts.
+                </li>
+            </ul>
+            <p>
+            This combination of data, visuals, and community-focused design ensures that real-time insights are not only scientifically robust but also 
+            accessible and impactful, fostering a deeper connection between technology and environmental stewardship.
             </p>
         </div>
         """,
