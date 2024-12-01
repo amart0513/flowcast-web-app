@@ -58,8 +58,9 @@ Once the app starts, you will see this in the terminal:
 
 You can now view your Streamlit app in your browser.
 
-  Local URL: http://localhost:1234
-  Network URL: http://01.2.3.789:1234
+
+  Local URL: http://localhost:XXXX
+  Network URL: http://X.X.X.XX:XXXX
 
 Open it in your browser to view the app.
 
