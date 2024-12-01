@@ -29,8 +29,8 @@ To set up the project locally, follow these steps:
 
 1. Clone the repository:
 
-git clone https://github.com/your-username/water-quality-predictor.git
-cd water-quality-predictor
+git clone https://github.com/your-username/flowcast-web-app.git
+cd flowcast-web-app
 
 2. Install the required dependencies:
 
