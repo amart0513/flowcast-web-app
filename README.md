@@ -28,11 +28,10 @@ This project is a water quality predictor built using Python, HTML, CSS, JavaScr
 ### Option 1: Set up locally via Command Line
 Open your terminal (or command prompt) and execute the following commands:
 
-bash
 ### 1. Clone the repository
 git clone https://github.com/your-username/flowcast-web-app.git
 
-### Navigate into the project directory
+#### Navigate into the project directory
 cd flowcast-web-app
 
 ### 2. Set Up Your Environment
@@ -40,7 +39,6 @@ cd flowcast-web-app
 - macOS/Linux: Use python3 or python based on your setup.
 
 ### 3. Create a virtual environment (optional but highly recommended):
-#### Create a virtual environment
 python -m venv venv
 
 #### Activate the environment
