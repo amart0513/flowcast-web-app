@@ -220,8 +220,6 @@ def render_API():
                 df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
                 df_api = df_api.apply(pd.to_numeric, errors='coerce',axis=1)  # Convert all data to numeric where possible
 
-                # Convert WTMP to numeric, forcing errors to NaN
-                #df_api['WTMP'] = pd.to_numeric(df_api['WTMP'], errors='coerce')
 
                 # Info container with NOAA data explanation
                 st.markdown(
