@@ -285,9 +285,9 @@ def render_background():
         )
 
     with col2:
-        st.image(IMAGE3, caption="The Heron collecting data nearby Haulover Beach, FL.", use_column_width=True)
+        st.image(IMAGE3, caption="The Heron collecting data nearby Haulover Beach, FL.", use_container_width=True)
         st.image(IMAGE5, caption="Our boat completely prepared for the upcoming mission on October 25, 2024 at the "
-                                 "Biscayne Bay Campus in Miami, FL.", use_column_width=True)
+                                 "Biscayne Bay Campus in Miami, FL.", use_container_width=True)
 
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
@@ -341,8 +341,8 @@ def render_background():
         )
 
     with col4:
-        st.image(IMAGE4, caption="Our team preparing for data collection in Biscayne Bay.", use_column_width=True)
-        st.image(IMAGE6, caption="Reassembling the ASV for second deployment onto the bay.", use_column_width=True)
+        st.image(IMAGE4, caption="Our team preparing for data collection in Biscayne Bay.", use_container_width=True)
+        st.image(IMAGE6, caption="Reassembling the ASV for second deployment onto the bay.", use_container_width=True)
 
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
