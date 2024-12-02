@@ -243,7 +243,7 @@ def render_API():
     if selected_region:
         selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
         if selected_region:
-            station_id = regions_hierarchy[selected_region][selected_station]
+            station_id = regions_hierarchy[selected_region][selected_station]["id"]
 
             # Fetch NOAA Data
             response = requests.get(API_URL.replace("<station_id>", station_id))
