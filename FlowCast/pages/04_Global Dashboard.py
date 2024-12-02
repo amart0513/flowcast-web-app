@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
+import folium
+from streamlit_folium import st_folium
 
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
@@ -173,6 +175,7 @@ st.markdown(
 # Banner
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
+
 # Function to display raw data
 def raw_data(df):
     st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
@@ -184,48 +187,78 @@ def raw_data(df):
 
 # Function to render data from NOAA API
 def render_API():
-
     # NOAA Regions and Stations
     # only a small portion of selected data from the API -> want to expand this data globally
     regions_hierarchy = {
-        "Atlantic (Tropical)": {"Cape Verde": "13001", "Martinique": "41040"},
-
-        "Atlantic (West)": {"Bermuda": "41049", "St. Martin": "41004"},
-
-        "Gulf of Mexico (East)/Florida": {"Hollywood Beach, FL": "41122", "Daytona Beach, FL": "41070",
-                                          "Cape Canaveral, FL": "41010", "St. Augustine, FL":"41117"},
-
-        "USA-Southeast": {"Charleston, SC": "41004", "Cape Hatteras, SC": "41002",
-                          "Virginia Beach, VA": "44014", "Cape May, NJ": "44009"},
-
-        "USA-Southwest": {"San Diego, CA": "46047", "Montague Island, AK": "46076",
-                          "Santa Monica Bay, CA": "46221", "Port Orford, OR": "46015"},
-
-        "Caribbean Sea": {"Kingston, JM": "42058", "Cozumel, MX": "42056", "San Juan, PR": "41053",
-                          "St. John, VI": "41052"}
+        "Atlantic (Tropical)": {
+            "Cape Verde": {"id": "13001", "lat": 12.000, "lon": -23.000},
+            "Martinique": {"id": "41040", "lat": 14.536, "lon": -53.136}
+        },
+        "Atlantic (West)": {
+            "Bermuda": {"id": "41049", "lat": 27.505, "lon": -62.271},
+            "St. Martin": {"id": "41004", "lat": 21.582, "lon": -58.630}
+        },
+        "Gulf of Mexico (East)/Florida": {
+            "Hollywood Beach, FL": {"id": "41122", "lat": 26.001, "lon": -80.096},
+            "Daytona Beach, FL": {"id": "41070", "lat": 29.289, "lon": -80.803},
+            "Cape Canaveral, FL": {"id": "41010", "lat": 28.878, "lon": -78.467},
+            "St. Augustine, FL": {"id": "41117", "lat": 29.999, "lon": -81.079}
+        },
+        "USA-Southeast": {
+            "Charleston, SC": {"id": "41004", "lat": 32.502, "lon": -79.099},
+            "Cape Hatteras, NC": {"id": "41002", "lat": 32.300, "lon": -75.400},
+            "Virginia Beach, VA": {"id": "44014", "lat": 36.611, "lon": -74.842},
+            "Cape May, NJ": {"id": "44009", "lat": 38.457, "lon": -74.702}
+        },
+        "USA-Southwest": {
+            "San Diego, CA": {"id": "46047", "lat": 32.500, "lon": -119.500},
+            "Montague Island, AK": {"id": "46076", "lat": 59.600, "lon": -148.000},
+            "Santa Monica Bay, CA": {"id": "46221", "lat": 33.800, "lon": -118.600},
+            "Port Orford, OR": {"id": "46015", "lat": 42.800, "lon": -124.800}
+        },
+        "Caribbean Sea": {
+            "Kingston, JM": {"id": "42058", "lat": 17.800, "lon": -76.800},
+            "Cozumel, MX": {"id": "42056", "lat": 20.300, "lon": -86.800},
+            "San Juan, PR": {"id": "41053", "lat": 18.500, "lon": -66.100},
+            "St. John, VI": {"id": "41052", "lat": 18.300, "lon": -64.700}
+        }
     }
+
+    # Display map
+    st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
+    buoy_map = folium.Map(location=[27.5, -60.0], zoom_start=4)  # Center map at an average location
+
+    for region, stations in regions_hierarchy.items():
+        for station_name, station_data in stations.items():
+            folium.Marker(
+                location=[station_data["lat"], station_data["lon"]],
+                popup=f"{station_name} ({region})",
+                tooltip=f"{station_name}",
+            ).add_to(buoy_map)
+
+    # Display the map in Streamlit
+    st_folium(buoy_map, width=700, height=500)
 
     selected_region = st.sidebar.selectbox("Select Region", list(regions_hierarchy.keys()))
     if selected_region:
-            selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
-            if selected_region:
-                station_id = regions_hierarchy[selected_region][selected_station]
+        selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
+        if selected_region:
+            station_id = regions_hierarchy[selected_region][selected_station]
 
-                # Fetch NOAA Data
-                response = requests.get(API_URL.replace("<station_id>", station_id))
-                if response.status_code == 200:
-                    data = response.text.splitlines()
-                    columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD',
-                               'PRES', 'ATMP', 'WTMP', 'DEWP', 'VIS', 'PTDY', 'TIDE']
+            # Fetch NOAA Data
+            response = requests.get(API_URL.replace("<station_id>", station_id))
+            if response.status_code == 200:
+                data = response.text.splitlines()
+                columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD',
+                           'PRES', 'ATMP', 'WTMP', 'DEWP', 'VIS', 'PTDY', 'TIDE']
 
-                # Create DataFrame
-                df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
-                df_api = df_api.apply(pd.to_numeric, errors='coerce',axis=1)  # Convert all data to numeric where possible
+            # Create DataFrame
+            df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
+            df_api = df_api.apply(pd.to_numeric, errors='coerce', axis=1)  # Convert all data to numeric where possible
 
-
-                # Info container with NOAA data explanation
-                st.markdown(
-                    """
+            # Info container with NOAA data explanation
+            st.markdown(
+                """
                     <div class="card">
                         <h4 style="color:#005f73; font-weight: bold;">What does NOAA's data mean and why is it important?</h4>
                         <p style="color:#252323;">NOAA’s data provides key insights into meteorological and oceanographic conditions. Below is an explanation of the parameters used:</p>
@@ -263,16 +296,17 @@ def render_API():
                         </ul>
                     </div>
                     """, unsafe_allow_html=True
-                )
+            )
 
-                # Station Title
-                st.markdown(f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>', unsafe_allow_html=True)
+            # Station Title
+            st.markdown(f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>',
+                        unsafe_allow_html=True)
 
-                # Display station info and raw data
-                st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
+            # Display station info and raw data
+            st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
 
-                # Explanation of fetched data
-                st.markdown("""
+            # Explanation of fetched data
+            st.markdown("""
                     <div class="card">
                         <p style="color:#252323;">
                             This raw data is retrieved from the NOAA station. It shows individual observations and measurements 
@@ -284,13 +318,13 @@ def render_API():
                     </div>
                 """, unsafe_allow_html=True)
 
-                # Display the raw data dataframe
-                st.dataframe(df_api)
+            # Display the raw data dataframe
+            st.dataframe(df_api)
 
-                st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
+            st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
 
-                # Explanation of descriptive statistics
-                st.markdown("""
+            # Explanation of descriptive statistics
+            st.markdown("""
                     <div class="card">
                         <p style="color:#252323;">
                             The descriptive statistics provide a summary of key statistical measures for each data column. 
@@ -302,12 +336,13 @@ def render_API():
                     </div>
                 """, unsafe_allow_html=True)
 
-                # Display the descriptive statistics of the dataframe
-                st.dataframe(df_api.describe())
+            # Display the descriptive statistics of the dataframe
+            st.dataframe(df_api.describe())
 
-                # Main Title and Data Description
-                st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>', unsafe_allow_html=True)
-                st.markdown("""
+            # Main Title and Data Description
+            st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>',
+                        unsafe_allow_html=True)
+            st.markdown("""
                 <div class="card">
                     <p> This dashboard presents real-time environmental data from the selected station, including:
                         <li><strong>Water Temperature</strong>: Tracks changes in sea surface temperature.</li>
@@ -319,80 +354,80 @@ def render_API():
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown('<div class="styled-subheader">Plots</div>',
-                            unsafe_allow_html=True)
+            st.markdown('<div class="styled-subheader">Plots</div>',
+                        unsafe_allow_html=True)
 
-                # Determine which data points are available and create a list of plots
-                plots = []
-                if 'WTMP' in df_api:
-                    plots.append({
-                        "title": "Water Temperature",
-                        "data": df_api['WTMP'],
-                        "color": "blue",
-                        "ylabel": "Temperature (°C)",
-                        "label": "Water Temperature (°C)"
-                    })
+            # Determine which data points are available and create a list of plots
+            plots = []
+            if 'WTMP' in df_api:
+                plots.append({
+                    "title": "Water Temperature",
+                    "data": df_api['WTMP'],
+                    "color": "blue",
+                    "ylabel": "Temperature (°C)",
+                    "label": "Water Temperature (°C)"
+                })
 
-                if 'ATMP' in df_api:
-                    plots.append({
-                        "title": "Atmospheric Pressure",
-                        "data": df_api['ATMP'],
-                        "color": "green",
-                        "ylabel": "Pressure (hPa)",
-                        "label": "Atmospheric Pressure (hPa)"
-                    })
+            if 'ATMP' in df_api:
+                plots.append({
+                    "title": "Atmospheric Pressure",
+                    "data": df_api['ATMP'],
+                    "color": "green",
+                    "ylabel": "Pressure (hPa)",
+                    "label": "Atmospheric Pressure (hPa)"
+                })
 
-                if 'APD' in df_api:
-                    plots.append({
-                        "title": "Average Wave Period",
-                        "data": df_api['APD'],
-                        "color": "purple",
-                        "ylabel": "Period (s)",
-                        "label": "Average Wave Period (s)"
-                    })
+            if 'APD' in df_api:
+                plots.append({
+                    "title": "Average Wave Period",
+                    "data": df_api['APD'],
+                    "color": "purple",
+                    "ylabel": "Period (s)",
+                    "label": "Average Wave Period (s)"
+                })
 
-                if 'WSPD' in df_api:
-                    plots.append({
-                        "title": "Wind Speed",
-                        "data": df_api['WSPD'],
-                        "color": "red",
-                        "ylabel": "Speed (m/s)",
-                        "label": "Wind Speed (m/s)"
-                    })
+            if 'WSPD' in df_api:
+                plots.append({
+                    "title": "Wind Speed",
+                    "data": df_api['WSPD'],
+                    "color": "red",
+                    "ylabel": "Speed (m/s)",
+                    "label": "Wind Speed (m/s)"
+                })
 
-                # Check if there are any plots to display
-                if plots:
-                    # Create a 2x2 grid dynamically based on the number of available plots
-                    num_plots = len(plots)
-                    num_rows = (num_plots + 1) // 2  # Calculate number of rows for a 2x2 layout
-                    fig, axs = plt.subplots(num_rows, 2, figsize=(15, 5 * num_rows), constrained_layout=True)
+            # Check if there are any plots to display
+            if plots:
+                # Create a 2x2 grid dynamically based on the number of available plots
+                num_plots = len(plots)
+                num_rows = (num_plots + 1) // 2  # Calculate number of rows for a 2x2 layout
+                fig, axs = plt.subplots(num_rows, 2, figsize=(15, 5 * num_rows), constrained_layout=True)
 
-                    # Flatten the axes array for easy iteration
-                    axs = axs.flatten()
+                # Flatten the axes array for easy iteration
+                axs = axs.flatten()
 
-                    # Generate the plots
-                    for i, plot in enumerate(plots):
-                        axs[i].plot(df_api.index, plot["data"], marker='o', color=plot["color"], label=plot["label"])
-                        axs[i].set_title(plot["title"])
-                        axs[i].set_xlabel("Observation Time")
-                        axs[i].set_ylabel(plot["ylabel"])
-                        axs[i].legend()
-                        axs[i].tick_params(axis='x', rotation=45)
-                        axs[i].grid(alpha=0.5)
+                # Generate the plots
+                for i, plot in enumerate(plots):
+                    axs[i].plot(df_api.index, plot["data"], marker='o', color=plot["color"], label=plot["label"])
+                    axs[i].set_title(plot["title"])
+                    axs[i].set_xlabel("Observation Time")
+                    axs[i].set_ylabel(plot["ylabel"])
+                    axs[i].legend()
+                    axs[i].tick_params(axis='x', rotation=45)
+                    axs[i].grid(alpha=0.5)
 
-                    # Hide any unused subplots
-                    for j in range(len(plots), len(axs)):
-                        fig.delaxes(axs[j])
+                # Hide any unused subplots
+                for j in range(len(plots), len(axs)):
+                    fig.delaxes(axs[j])
 
-                    # Display the plots
-                    st.pyplot(fig)
-                else:
-                    # If no data is available
-                    st.error("Failed to fetch data for the selected station.")
-
-
+                # Display the plots
+                st.pyplot(fig)
             else:
-                st.error("Failed to fetch data for the selected region.")
+                # If no data is available
+                st.error("Failed to fetch data for the selected station.")
+
+
+        else:
+            st.error("Failed to fetch data for the selected region.")
 
 
 # Render the API function
