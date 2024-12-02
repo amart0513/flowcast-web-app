@@ -212,7 +212,7 @@ def display_buoy_map(regions_hierarchy, selected_region=None, selected_station=N
             ).add_to(buoy_map)
 
     # Display the map in Streamlit
-    return st_folium(buoy_map, width=800, height=600)
+    return st_folium(buoy_map, width=800, height=800)
 
 
 # Function to render data from NOAA API
