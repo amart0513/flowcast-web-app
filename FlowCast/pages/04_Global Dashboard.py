@@ -176,13 +176,43 @@ st.markdown(
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
 
-# Function to display raw data
-def raw_data(df):
-    st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
-    st.dataframe(df)
-    st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
-    st.dataframe(df.describe())
-    st.markdown('</div>', unsafe_allow_html=True)
+# Function to create and display the map
+def display_buoy_map(regions_hierarchy, selected_region=None, selected_station=None, current_data=None):
+    # Create a map centered on an average location
+    buoy_map = folium.Map(location=[27.5, -60.0], zoom_start=4)
+
+    # Loop through all regions and stations
+    for region, stations in regions_hierarchy.items():
+        for station_name, station_data in stations.items():
+            # Determine if this is the selected station
+            is_selected = selected_region == region and selected_station == station_name
+
+            # Assign colors based on selection
+            icon_color = "red" if is_selected else "blue"
+            icon_prefix = "fa"  # Use FontAwesome icons
+
+            # Create a popup with station name and data if available
+            popup_content = f"<b>{station_name}</b><br>Region: {region}"
+            if is_selected and current_data:
+                popup_content += f"""
+                <ul>
+                    <li><b>Water Temp:</b> {current_data.get('WTMP', 'N/A')}°C</li>
+                    <li><b>Avg Wave Period:</b> {current_data.get('APD', 'N/A')} s</li>
+                    <li><b>Atmos Pressure:</b> {current_data.get('ATMP', 'N/A')} hPa</li>
+                    <li><b>Wind Speed:</b> {current_data.get('WSPD', 'N/A')} m/s</li>
+                </ul>
+                """
+
+            # Add marker to the map
+            folium.Marker(
+                location=[station_data["lat"], station_data["lon"]],
+                popup=folium.Popup(popup_content, max_width=250),
+                tooltip=f"{station_name}",
+                icon=folium.Icon(color=icon_color, icon="map-marker", prefix=icon_prefix)
+            ).add_to(buoy_map)
+
+    # Display the map in Streamlit
+    return st_folium(buoy_map, width=800, height=600)
 
 
 # Function to render data from NOAA API
@@ -224,21 +254,6 @@ def render_API():
         }
     }
 
-    # Display map
-    st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
-    buoy_map = folium.Map(location=[27.5, -60.0], zoom_start=4)  # Center map at an average location
-
-    for region, stations in regions_hierarchy.items():
-        for station_name, station_data in stations.items():
-            folium.Marker(
-                location=[station_data["lat"], station_data["lon"]],
-                popup=f"{station_name} ({region})",
-                tooltip=f"{station_name}",
-            ).add_to(buoy_map)
-
-    # Display the map in Streamlit
-    st_folium(buoy_map, width=700, height=500)
-
     selected_region = st.sidebar.selectbox("Select Region", list(regions_hierarchy.keys()))
     if selected_region:
         selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
@@ -255,6 +270,14 @@ def render_API():
             # Create DataFrame
             df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
             df_api = df_api.apply(pd.to_numeric, errors='coerce', axis=1)  # Convert all data to numeric where possible
+
+            # Extract the latest available data
+            current_data = {
+                "WTMP": df_api["WTMP"].iloc[-1] if "WTMP" in df_api.columns else "N/A",
+                "APD": df_api["APD"].iloc[-1] if "APD" in df_api.columns else "N/A",
+                "ATMP": df_api["ATMP"].iloc[-1] if "ATMP" in df_api.columns else "N/A",
+                "WSPD": df_api["WSPD"].iloc[-1] if "WSPD" in df_api.columns else "N/A",
+            }
 
             # Info container with NOAA data explanation
             st.markdown(
@@ -339,20 +362,24 @@ def render_API():
             # Display the descriptive statistics of the dataframe
             st.dataframe(df_api.describe())
 
+            st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
+            # display map using folium
+            display_buoy_map(regions_hierarchy, selected_region, selected_station, current_data)
+
             # Main Title and Data Description
             st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>',
                         unsafe_allow_html=True)
             st.markdown("""
-                <div class="card">
-                    <p> This dashboard presents real-time environmental data from the selected station, including:
-                        <li><strong>Water Temperature</strong>: Tracks changes in sea surface temperature.</li>
-                        <li><strong>Atmospheric Pressure</strong>: Indicates weather conditions and possible storm systems.</li>
-                        <li><strong>Average Wave Period</strong>: Reflects the average time between successive waves, which can inform ocean conditions.</li>
-                        <li><strong>Wind Speed</strong>: Provides insight into wind conditions, impacting maritime and weather systems.</li>
-                    </p>
-                    <p>Use this information for monitoring environmental changes, supporting research, and enhancing decision-making.</p>
-                </div>
-                """, unsafe_allow_html=True)
+                            <div class="card">
+                                <p> This dashboard presents real-time environmental data from the selected station, including:
+                                    <li><strong>Water Temperature</strong>: Tracks changes in sea surface temperature.</li>
+                                    <li><strong>Atmospheric Pressure</strong>: Indicates weather conditions and possible storm systems.</li>
+                                    <li><strong>Average Wave Period</strong>: Reflects the average time between successive waves, which can inform ocean conditions.</li>
+                                    <li><strong>Wind Speed</strong>: Provides insight into wind conditions, impacting maritime and weather systems.</li>
+                                </p>
+                                <p>Use this information for monitoring environmental changes, supporting research, and enhancing decision-making.</p>
+                            </div>
+                            """, unsafe_allow_html=True)
 
             st.markdown('<div class="styled-subheader">Plots</div>',
                         unsafe_allow_html=True)
