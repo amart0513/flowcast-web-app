@@ -47,7 +47,16 @@ st.markdown(
 
         /* Consistent Subtitle and Subheader Styles */
         .styled-subheader {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #005f73;
+            margin: 5px 0;
+            font-family: "Consolas", monospace;
+        }
+        
+        /* Consistent Caption Styles */
+        .styled-caption {
+            font-size: 1.2rem;
             font-weight: bold;
             color: #005f73;
             margin: 5px 0;
@@ -312,7 +321,7 @@ def stats_describe(df_api):
 
     # Display raw descriptive statistics
     descriptive_stats = df_api.describe()
-    st.subheader("Table")
+    st.markdown(f'<div class="styled-caption">Data Table</div>', unsafe_allow_html=True)
     st.dataframe(descriptive_stats)
 
     # Generate dynamic insights based on descriptive statistics
@@ -388,7 +397,7 @@ def data_describe():
 
 def main_data_and_describe():
     # Main Title and Data Description
-    st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>',
+    st.markdown('<div class="hero-subtitle">Environmental Observations Dashboard</div>',
                 unsafe_allow_html=True)
     st.markdown("""
                                <div class="card">
@@ -519,6 +528,7 @@ def render_API():
 
                 #Fetched data info
                 data_describe()
+                st.markdown(f'<div class="styled-caption">Data Table</div>', unsafe_allow_html=True)
                 st.dataframe(df_api)
 
                 # Descriptive stats
@@ -539,10 +549,10 @@ def render_API():
                 wspd_trend = 'stable' if df_api['WSPD'].std() < 2 else 'highly variable'
                 atmp_trend = 'steady' if df_api['ATMP'].std() < 1 else 'changing significantly'
 
+                st.markdown(f'<div class ="styled-subheader"">Key Trends Observed for This Station</div>', unsafe_allow_html=True)
                 # Display key trends observed
                 trends_html = f"""
                 <div class="card">
-                    <div class="styled-subheader"">Key Trends Observed for This Station</div>
                     <ul>
                         <li><b>Water Temperature:</b> The trend is <strong>{wtmp_trend}</strong> based on recent observations.</li>
                         <li><b>Wave Periods:</b> They are <strong>{apd_trend}</strong> during the observed timeframe.</li>
@@ -557,7 +567,7 @@ def render_API():
                 # =========================================
                 # Line Plots
                 # =========================================
-
+                st.markdown(f'<div class="styled-caption">Line Chart for WTMP, APD, ATMP, & WSPD</div>', unsafe_allow_html=True)
                 st.line_chart(df_api[["WTMP", "APD", "ATMP", "WSPD"]])
                 legend_status()
 
