@@ -4,6 +4,8 @@ import requests
 import matplotlib.pyplot as plt
 import folium
 from streamlit_folium import st_folium
+from folium.plugins import MarkerCluster
+from datetime import datetime
 
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
@@ -175,36 +177,35 @@ st.markdown(
 # Banner
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
+# Function to display all the buoys fetched from the station
+def display_buoy_map(regions_hierarchy, selected_region="All Regions", selected_station=None, current_data=None):
+    # Set default map center
+    center_lat, center_lon = 27.5, -60.0
+    zoom_level = 2
 
-def display_buoy_map(regions_hierarchy, selected_region="Default", selected_station=None, current_data=None):
-    """
-    Display a Folium map with buoys for a specific region or all regions.
+    if selected_region != "All Regions":
+        # Center map on the selected region
+        region_coords = [(station["lat"], station["lon"]) for station in regions_hierarchy[selected_region].values()]
+        center_lat = sum(coord[0] for coord in region_coords) / len(region_coords)
+        center_lon = sum(coord[1] for coord in region_coords) / len(region_coords)
+        zoom_level = 3.5  # Zoom closer to the region
 
-    :param regions_hierarchy: Dictionary containing buoy details (id, lat, lon).
-    :param selected_region: Selected region name or "Default" to show all.
-    :param selected_station: Specific station to highlight.
-    :param current_data: Dictionary of current data for the selected station.
-    :return: None (renders the map in Streamlit).
-    """
-    # Create a map centered on an average location
-    buoy_map = folium.Map(location=[27.5, -60.0], zoom_start=4)
+    # Create a folium map
+    buoy_map = folium.Map(location=[center_lat, center_lon], zoom_start=zoom_level)
+
+    # Add MarkerCluster for better visualization
+    marker_cluster = MarkerCluster().add_to(buoy_map)
 
     # Determine regions to display
     regions_to_display = (
-        regions_hierarchy if selected_region == "Default" else {selected_region: regions_hierarchy[selected_region]}
+        regions_hierarchy if selected_region == "All Regions" else {selected_region: regions_hierarchy[selected_region]}
     )
 
-    # Loop through the selected regions and stations
+    # Add markers to the map
     for region, stations in regions_to_display.items():
         for station_name, station_data in stations.items():
-            # Determine if this is the selected station
-            is_selected = selected_region != "Default" and selected_station == station_name
-
-            # Assign colors based on selection
-            icon_color = "red" if is_selected else "blue"
-            icon_prefix = "fa"  # Use FontAwesome icons
-
-            # Create a popup with station name and data if available
+            is_selected = selected_region != "All Regions" and selected_station == station_name
+            icon_color = "green" if is_selected else "blue"
             popup_content = f"<b>{station_name}</b><br>Region: {region}"
             if is_selected and current_data:
                 popup_content += f"""
@@ -216,17 +217,123 @@ def display_buoy_map(regions_hierarchy, selected_region="Default", selected_stat
                 </ul>
                 """
 
-            # Add marker to the map
             folium.Marker(
                 location=[station_data["lat"], station_data["lon"]],
                 popup=folium.Popup(popup_content, max_width=250),
-                tooltip=f"{station_name}",
-                icon=folium.Icon(color=icon_color, icon="map-marker", prefix=icon_prefix)
-            ).add_to(buoy_map)
+                tooltip=station_name,
+                icon=folium.Icon(color=icon_color, icon="map-marker", prefix="fa")
+            ).add_to(marker_cluster)
 
-    # Display the map in Streamlit
     return st_folium(buoy_map, width=800, height=600)
 
+
+# Function to download the data for researching purposes
+def download_data(df):
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="Download Data as a CSV file.",
+        data=csv,
+        file_name="noaa_data.csv",
+        mime="text/csv",
+    )
+
+def info_marker():
+    # Info container with NOAA data explanation
+    st.markdown(
+        """
+            <div class="card">
+                <h4 style="color:#005f73; font-weight: bold;">What does NOAA's data mean and why is it important?</h4>
+                <p style="color:#252323;">NOAA’s data provides key insights into meteorological and oceanographic conditions. Below is an explanation of the parameters used:</p>
+                <ul style="color:#252323;">
+                    <li><strong>Date and Time (YY, MM, DD, hh, mm):</strong> Indicate the date and time in UTC when the data was recorded.</li>
+                    <li><strong>Wind Data:</strong>
+                        <ul>
+                            <li><strong>WDIR:</strong> Wind Direction (degrees) — where the wind originates, measured in degrees from north.</li>
+                            <li><strong>WSPD:</strong> Wind Speed (m/s) — the average wind speed recorded during the observation.</li>
+                            <li><strong>GST:</strong> Gust Speed (m/s) — the highest wind speed recorded during gusts.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Wave Data:</strong>
+                        <ul>
+                            <li><strong>WVHT:</strong> Significant Wave Height (meters) — average height of the highest third of waves.</li>
+                            <li><strong>DPD:</strong> Dominant Wave Period (seconds) — the period between the most frequent waves.</li>
+                            <li><strong>APD:</strong> Average Wave Period (seconds) — the average period between waves.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Atmospheric Data:</strong>
+                        <ul>
+                            <li><strong>PRES:</strong> Atmospheric Pressure (hPa) — crucial for weather forecasting.</li>
+                            <li><strong>ATMP:</strong> Air Temperature (°C) — the temperature of the surrounding air.</li>
+                            <li><strong>DEWP:</strong> Dew Point (°C) — indicates humidity levels.</li>
+                            <li><strong>PTDY:</strong> Pressure Tendency (hPa) — measures how pressure changes over time.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Oceanic Data:</strong>
+                        <ul>
+                            <li><strong>WTMP:</strong> Water Temperature (°C) — temperature of the water at the observation site.</li>
+                            <li><strong>VIS:</strong> Visibility (meters) — how far one can see in the given conditions.</li>
+                            <li><strong>TIDE:</strong> Tide Height (meters) — the current tide height.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            """, unsafe_allow_html=True
+    )
+
+def stats_describe():
+    st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
+
+    # Explanation of descriptive statistics
+    st.markdown("""
+                        <div class="card">
+                            <p style="color:#252323;">
+                                The descriptive statistics provide a summary of key statistical measures for each data column. 
+                                These metrics include the mean (average), standard deviation, minimum, maximum, and quartiles, 
+                                which help users quickly assess the distribution and variability of the data. 
+                                For example, this section can reveal the average wind speed, temperature range, or the general trends in oceanographic and atmospheric conditions at the station.
+                                Descriptive statistics allow users to gain insights into the overall behavior of the data without needing to perform manual calculations.
+                            </p>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+def data_describe():
+    # Display station info and raw data
+    st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
+
+    # Explanation of fetched data
+    st.markdown("""
+                        <div class="card">
+                            <p style="color:#252323;">
+                                This raw data is retrieved from the NOAA station. It shows individual observations and measurements 
+                                collected from the selected station, such as wind speed, wave height, temperature, and atmospheric pressure. 
+                                The data is presented in tabular format, providing a detailed view of the recorded conditions at each observation time.
+                                This raw data serves as the foundation for understanding the real-time conditions at the monitoring site and is useful for 
+                                analysis or further exploration.
+                            </p>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+
+def main_data_and_describe():
+    # Main Title and Data Description
+    st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>',
+                unsafe_allow_html=True)
+    st.markdown("""
+                               <div class="card">
+                                   <p> This dashboard presents real-time environmental data from the selected station, including:
+                                       <li><strong>Water Temperature</strong>: Tracks changes in sea surface temperature.</li>
+                                       <li><strong>Atmospheric Pressure</strong>: Indicates weather conditions and possible storm systems.</li>
+                                       <li><strong>Average Wave Period</strong>: Reflects the average time between successive waves, which can inform ocean conditions.</li>
+                                       <li><strong>Wind Speed</strong>: Provides insight into wind conditions, impacting maritime and weather systems.</li>
+                                   </p>
+                                   <p>Use this information for monitoring environmental changes, supporting research, and enhancing decision-making.</p>
+                               </div>
+                               """, unsafe_allow_html=True)
+
+# plots header
+def plots_header():
+    st.markdown('<div class="styled-subheader">Line Plots for the 4 Key Points</div>',
+                unsafe_allow_html=True)
 
 # Function to render data from NOAA API
 def render_API():
@@ -267,207 +374,75 @@ def render_API():
         }
     }
 
-    selected_region = st.sidebar.selectbox("Select Region", list(regions_hierarchy.keys()))
-    if selected_region:
-        selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
-        if selected_region:
-            station_id = regions_hierarchy[selected_region][selected_station]["id"]
+    # Add "All Regions" option for all buoys
+    region_options = ["All Regions"] + list(regions_hierarchy.keys())
+    selected_region = st.sidebar.selectbox("Select Region", region_options)
 
-            # Fetch NOAA Data
+    if selected_region != "All Regions":
+        station_options = list(regions_hierarchy[selected_region].keys())
+        selected_station = st.sidebar.selectbox("Select Station", station_options)
+    else:
+        selected_station = None
+
+    # Fetch data if a station is selected
+    if selected_station:
+        station_id = regions_hierarchy[selected_region][selected_station]["id"]
+
+        with st.spinner("Fetching data..."):
             response = requests.get(API_URL.replace("<station_id>", station_id))
             if response.status_code == 200:
                 data = response.text.splitlines()
                 columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD',
                            'PRES', 'ATMP', 'WTMP', 'DEWP', 'VIS', 'PTDY', 'TIDE']
 
-            # Create DataFrame
-            df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
-            df_api = df_api.apply(pd.to_numeric, errors='coerce', axis=1)  # Convert all data to numeric where possible
+                # Create DataFrame
+                df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
+                df_api = df_api.apply(pd.to_numeric, errors='coerce', axis=1)  # Convert all data to numeric
 
-            # Extract the latest available data
-            current_data = {
-                "WTMP": df_api["WTMP"].iloc[-1] if "WTMP" in df_api.columns else "N/A",
-                "APD": df_api["APD"].iloc[-1] if "APD" in df_api.columns else "N/A",
-                "ATMP": df_api["ATMP"].iloc[-1] if "ATMP" in df_api.columns else "N/A",
-                "WSPD": df_api["WSPD"].iloc[-1] if "WSPD" in df_api.columns else "N/A",
-            }
+                # Extract the latest available data
+                current_data = {
+                    "WTMP": df_api["WTMP"].iloc[-1] if "WTMP" in df_api.columns else "N/A",
+                    "APD": df_api["APD"].iloc[-1] if "APD" in df_api.columns else "N/A",
+                    "ATMP": df_api["ATMP"].iloc[-1] if "ATMP" in df_api.columns else "N/A",
+                    "WSPD": df_api["WSPD"].iloc[-1] if "WSPD" in df_api.columns else "N/A",
+                }
 
-            # Info container with NOAA data explanation
-            st.markdown(
-                """
-                    <div class="card">
-                        <h4 style="color:#005f73; font-weight: bold;">What does NOAA's data mean and why is it important?</h4>
-                        <p style="color:#252323;">NOAA’s data provides key insights into meteorological and oceanographic conditions. Below is an explanation of the parameters used:</p>
-                        <ul style="color:#252323;">
-                            <li><strong>Date and Time (YY, MM, DD, hh, mm):</strong> Indicate the date and time in UTC when the data was recorded.</li>
-                            <li><strong>Wind Data:</strong>
-                                <ul>
-                                    <li><strong>WDIR:</strong> Wind Direction (degrees) — where the wind originates, measured in degrees from north.</li>
-                                    <li><strong>WSPD:</strong> Wind Speed (m/s) — the average wind speed recorded during the observation.</li>
-                                    <li><strong>GST:</strong> Gust Speed (m/s) — the highest wind speed recorded during gusts.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Wave Data:</strong>
-                                <ul>
-                                    <li><strong>WVHT:</strong> Significant Wave Height (meters) — average height of the highest third of waves.</li>
-                                    <li><strong>DPD:</strong> Dominant Wave Period (seconds) — the period between the most frequent waves.</li>
-                                    <li><strong>APD:</strong> Average Wave Period (seconds) — the average period between waves.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Atmospheric Data:</strong>
-                                <ul>
-                                    <li><strong>PRES:</strong> Atmospheric Pressure (hPa) — crucial for weather forecasting.</li>
-                                    <li><strong>ATMP:</strong> Air Temperature (°C) — the temperature of the surrounding air.</li>
-                                    <li><strong>DEWP:</strong> Dew Point (°C) — indicates humidity levels.</li>
-                                    <li><strong>PTDY:</strong> Pressure Tendency (hPa) — measures how pressure changes over time.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Oceanic Data:</strong>
-                                <ul>
-                                    <li><strong>WTMP:</strong> Water Temperature (°C) — temperature of the water at the observation site.</li>
-                                    <li><strong>VIS:</strong> Visibility (meters) — how far one can see in the given conditions.</li>
-                                    <li><strong>TIDE:</strong> Tide Height (meters) — the current tide height.</li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    """, unsafe_allow_html=True
-            )
+                # NOAA data description
+                info_marker()
 
-            # Station Title
-            st.markdown(f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>',
-                        unsafe_allow_html=True)
+                # Station Title
+                st.markdown(
+                    f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>',
+                    unsafe_allow_html=True)
 
-            # Display station info and raw data
-            st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
+                # Fetched data
+                data_describe()
+                st.dataframe(df_api)
 
-            # Explanation of fetched data
-            st.markdown("""
-                    <div class="card">
-                        <p style="color:#252323;">
-                            This raw data is retrieved from the NOAA station. It shows individual observations and measurements 
-                            collected from the selected station, such as wind speed, wave height, temperature, and atmospheric pressure. 
-                            The data is presented in tabular format, providing a detailed view of the recorded conditions at each observation time.
-                            This raw data serves as the foundation for understanding the real-time conditions at the monitoring site and is useful for 
-                            analysis or further exploration.
-                        </p>
-                    </div>
-                """, unsafe_allow_html=True)
+                # Descriptive stats
+                stats_describe()
+                st.dataframe(df_api.describe())
 
-            # Display the raw data dataframe
-            st.dataframe(df_api)
+                # Buoy Locations title
+                st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
 
-            st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
+                # Display map with the selected station highlighted
+                display_buoy_map(regions_hierarchy, selected_region, selected_station, current_data)
 
-            # Explanation of descriptive statistics
-            st.markdown("""
-                    <div class="card">
-                        <p style="color:#252323;">
-                            The descriptive statistics provide a summary of key statistical measures for each data column. 
-                            These metrics include the mean (average), standard deviation, minimum, maximum, and quartiles, 
-                            which help users quickly assess the distribution and variability of the data. 
-                            For example, this section can reveal the average wind speed, temperature range, or the general trends in oceanographic and atmospheric conditions at the station.
-                            Descriptive statistics allow users to gain insights into the overall behavior of the data without needing to perform manual calculations.
-                        </p>
-                    </div>
-                """, unsafe_allow_html=True)
+                # Environmental Observations Dashboard
+                main_data_and_describe()
 
-            # Display the descriptive statistics of the dataframe
-            st.dataframe(df_api.describe())
+                # Interactive Charts button
+                plots_header()
+                st.line_chart(df_api[["WTMP", "APD", "ATMP", "WSPD"]])
+                # Download Button
+                download_data(df_api)
 
-            st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
-            # display map using folium
-            display_buoy_map(regions_hierarchy, selected_region, selected_station, current_data)
-
-            # Main Title and Data Description
-            st.markdown('<div class="styled-subheader">Environmental Observations Dashboard</div>',
-                        unsafe_allow_html=True)
-            st.markdown("""
-                            <div class="card">
-                                <p> This dashboard presents real-time environmental data from the selected station, including:
-                                    <li><strong>Water Temperature</strong>: Tracks changes in sea surface temperature.</li>
-                                    <li><strong>Atmospheric Pressure</strong>: Indicates weather conditions and possible storm systems.</li>
-                                    <li><strong>Average Wave Period</strong>: Reflects the average time between successive waves, which can inform ocean conditions.</li>
-                                    <li><strong>Wind Speed</strong>: Provides insight into wind conditions, impacting maritime and weather systems.</li>
-                                </p>
-                                <p>Use this information for monitoring environmental changes, supporting research, and enhancing decision-making.</p>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-            st.markdown('<div class="styled-subheader">Plots</div>',
-                        unsafe_allow_html=True)
-
-            # Determine which data points are available and create a list of plots
-            plots = []
-            if 'WTMP' in df_api:
-                plots.append({
-                    "title": "Water Temperature",
-                    "data": df_api['WTMP'],
-                    "color": "blue",
-                    "ylabel": "Temperature (°C)",
-                    "label": "Water Temperature (°C)"
-                })
-
-            if 'ATMP' in df_api:
-                plots.append({
-                    "title": "Atmospheric Pressure",
-                    "data": df_api['ATMP'],
-                    "color": "green",
-                    "ylabel": "Pressure (hPa)",
-                    "label": "Atmospheric Pressure (hPa)"
-                })
-
-            if 'APD' in df_api:
-                plots.append({
-                    "title": "Average Wave Period",
-                    "data": df_api['APD'],
-                    "color": "purple",
-                    "ylabel": "Period (s)",
-                    "label": "Average Wave Period (s)"
-                })
-
-            if 'WSPD' in df_api:
-                plots.append({
-                    "title": "Wind Speed",
-                    "data": df_api['WSPD'],
-                    "color": "red",
-                    "ylabel": "Speed (m/s)",
-                    "label": "Wind Speed (m/s)"
-                })
-
-            # Check if there are any plots to display
-            if plots:
-                # Create a 2x2 grid dynamically based on the number of available plots
-                num_plots = len(plots)
-                num_rows = (num_plots + 1) // 2  # Calculate number of rows for a 2x2 layout
-                fig, axs = plt.subplots(num_rows, 2, figsize=(15, 5 * num_rows), constrained_layout=True)
-
-                # Flatten the axes array for easy iteration
-                axs = axs.flatten()
-
-                # Generate the plots
-                for i, plot in enumerate(plots):
-                    axs[i].plot(df_api.index, plot["data"], marker='o', color=plot["color"], label=plot["label"])
-                    axs[i].set_title(plot["title"])
-                    axs[i].set_xlabel("Observation Time")
-                    axs[i].set_ylabel(plot["ylabel"])
-                    axs[i].legend()
-                    axs[i].tick_params(axis='x', rotation=45)
-                    axs[i].grid(alpha=0.5)
-
-                # Hide any unused subplots
-                for j in range(len(plots), len(axs)):
-                    fig.delaxes(axs[j])
-
-                # Display the plots
-                st.pyplot(fig)
             else:
-                # If no data is available
-                st.error("Failed to fetch data for the selected station.")
-
-
-        else:
-            st.error("Failed to fetch data for the selected region.")
+                st.error("Failed to fetch data from the NOAA API.")
+    else:
+        # Display map with all buoys
+        display_buoy_map(regions_hierarchy)
 
 
 # Render the API function
