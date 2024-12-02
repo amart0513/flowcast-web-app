@@ -176,16 +176,29 @@ st.markdown(
 st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
 
 
-# Function to create and display the map
-def display_buoy_map(regions_hierarchy, selected_region=None, selected_station=None, current_data=None):
+def display_buoy_map(regions_hierarchy, selected_region="Default", selected_station=None, current_data=None):
+    """
+    Display a Folium map with buoys for a specific region or all regions.
+
+    :param regions_hierarchy: Dictionary containing buoy details (id, lat, lon).
+    :param selected_region: Selected region name or "Default" to show all.
+    :param selected_station: Specific station to highlight.
+    :param current_data: Dictionary of current data for the selected station.
+    :return: None (renders the map in Streamlit).
+    """
     # Create a map centered on an average location
     buoy_map = folium.Map(location=[27.5, -60.0], zoom_start=4)
 
-    # Loop through all regions and stations
-    for region, stations in regions_hierarchy.items():
+    # Determine regions to display
+    regions_to_display = (
+        regions_hierarchy if selected_region == "Default" else {selected_region: regions_hierarchy[selected_region]}
+    )
+
+    # Loop through the selected regions and stations
+    for region, stations in regions_to_display.items():
         for station_name, station_data in stations.items():
             # Determine if this is the selected station
-            is_selected = selected_region == region and selected_station == station_name
+            is_selected = selected_region != "Default" and selected_station == station_name
 
             # Assign colors based on selection
             icon_color = "red" if is_selected else "blue"
@@ -212,7 +225,7 @@ def display_buoy_map(regions_hierarchy, selected_region=None, selected_station=N
             ).add_to(buoy_map)
 
     # Display the map in Streamlit
-    return st_folium(buoy_map, width=800, height=800)
+    return st_folium(buoy_map, width=800, height=600)
 
 
 # Function to render data from NOAA API
