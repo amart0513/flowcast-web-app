@@ -3,8 +3,9 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 import folium
+from folium import Map, Popup, Marker, Icon
 from streamlit_folium import st_folium
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, FastMarkerCluster
 from datetime import datetime
 
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
@@ -174,38 +175,47 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Banner
-st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
-
 # Function to display all the buoys fetched from the station
 def display_buoy_map(regions_hierarchy, selected_region="All Regions", selected_station=None, current_data=None):
-    # Set default map center
+    """
+    Display a Folium map with buoys for a specific region or all regions.
+    Ensures the map is properly centered and zoomed.
+    """
+    # Default map center and zoom
     center_lat, center_lon = 27.5, -60.0
     zoom_level = 2
 
     if selected_region != "All Regions":
-        # Center map on the selected region
+        # Center the map on the selected region
         region_coords = [(station["lat"], station["lon"]) for station in regions_hierarchy[selected_region].values()]
         center_lat = sum(coord[0] for coord in region_coords) / len(region_coords)
         center_lon = sum(coord[1] for coord in region_coords) / len(region_coords)
-        zoom_level = 3.5  # Zoom closer to the region
+        zoom_level = 5 # Moderate zoom level for the region
 
-    # Create a folium map
-    buoy_map = folium.Map(location=[center_lat, center_lon], zoom_start=zoom_level)
+    if selected_station:
+        # Center the map on the selected station
+        station_data = regions_hierarchy[selected_region][selected_station]
+        center_lat, center_lon = station_data["lat"], station_data["lon"]
+        zoom_level = 8  # Close zoom for the specific station
 
-    # Add MarkerCluster for better visualization
+    # Create a folium map centered on the calculated coordinates
+    buoy_map = folium.Map(location=[center_lat, center_lon], zoom_start=zoom_level, control_scale=True)
+
+    # Add a MarkerCluster for the buoys
     marker_cluster = MarkerCluster().add_to(buoy_map)
 
-    # Determine regions to display
+    # Determine which regions to display
     regions_to_display = (
         regions_hierarchy if selected_region == "All Regions" else {selected_region: regions_hierarchy[selected_region]}
     )
 
-    # Add markers to the map
+    # Add markers for all buoys in the selected region(s)
     for region, stations in regions_to_display.items():
         for station_name, station_data in stations.items():
-            is_selected = selected_region != "All Regions" and selected_station == station_name
-            icon_color = "green" if is_selected else "blue"
+            is_selected = selected_station == station_name
+            icon_color = "red" if is_selected else "blue"
+
+            # Construct the popup content
             popup_content = f"<b>{station_name}</b><br>Region: {region}"
             if is_selected and current_data:
                 popup_content += f"""
@@ -217,6 +227,7 @@ def display_buoy_map(regions_hierarchy, selected_region="All Regions", selected_
                 </ul>
                 """
 
+            # Add a marker for each buoy
             folium.Marker(
                 location=[station_data["lat"], station_data["lon"]],
                 popup=folium.Popup(popup_content, max_width=250),
@@ -224,7 +235,9 @@ def display_buoy_map(regions_hierarchy, selected_region="All Regions", selected_
                 icon=folium.Icon(color=icon_color, icon="map-marker", prefix="fa")
             ).add_to(marker_cluster)
 
+    # Render the map within Streamlit
     return st_folium(buoy_map, width=800, height=600)
+
 
 
 # Function to download the data for researching purposes
@@ -280,7 +293,8 @@ def info_marker():
             """, unsafe_allow_html=True
     )
 
-def stats_describe():
+
+def stats_describe(df_api):
     st.markdown('<div class="styled-subheader">Descriptive Statistics</div>', unsafe_allow_html=True)
 
     # Explanation of descriptive statistics
@@ -296,10 +310,68 @@ def stats_describe():
                         </div>
                     """, unsafe_allow_html=True)
 
+    # Display raw descriptive statistics
+    descriptive_stats = df_api.describe()
+    st.subheader("Table")
+    st.dataframe(descriptive_stats)
+
+    # Generate dynamic insights based on descriptive statistics
+    st.markdown('<div class="styled-subheader">Dynamic Insights</div>', unsafe_allow_html=True)
+    insights = []
+
+    # Water Temperature (WTMP)
+    if 'WTMP' in df_api.columns:
+        temp_mean = descriptive_stats.loc['mean', 'WTMP']
+        temp_std = descriptive_stats.loc['std', 'WTMP']
+        temp_range = descriptive_stats.loc['max', 'WTMP'] - descriptive_stats.loc['min', 'WTMP']
+        temp_insight = f"Water temperature has an average of {temp_mean:.1f}°C with a standard deviation of {temp_std:.1f}, indicating {'high variability' if temp_std > 2 else 'stable conditions'}. The range is {temp_range:.1f}°C."
+        insights.append(temp_insight)
+
+    # Average Wave Period (APD)
+    if 'APD' in df_api.columns:
+        apd_mean = descriptive_stats.loc['mean', 'APD']
+        apd_std = descriptive_stats.loc['std', 'APD']
+        apd_insight = f"Wave periods average {apd_mean:.1f} seconds with a standard deviation of {apd_std:.1f}, reflecting {'significant fluctuations' if apd_std > 1.5 else 'consistent wave timing'}."
+        insights.append(apd_insight)
+
+    # Atmospheric Pressure (ATMP)
+    if 'ATMP' in df_api.columns:
+        atmp_mean = descriptive_stats.loc['mean', 'ATMP']
+        atmp_std = descriptive_stats.loc['std', 'ATMP']
+        atmp_range = descriptive_stats.loc['max', 'ATMP'] - descriptive_stats.loc['min', 'ATMP']
+        atmp_insight = f"Atmospheric pressure averages {atmp_mean:.1f} hPa with a standard deviation of {atmp_std:.1f}, showing {'stable conditions' if atmp_std < 1 else 'significant variability'}. The range is {atmp_range:.1f} hPa."
+        insights.append(atmp_insight)
+
+    # Wind Speed (WSPD)
+    if 'WSPD' in df_api.columns:
+        wspd_mean = descriptive_stats.loc['mean', 'WSPD']
+        wspd_std = descriptive_stats.loc['std', 'WSPD']
+        wspd_insight = f"Wind speed has an average of {wspd_mean:.1f} m/s with a standard deviation of {wspd_std:.1f}, indicating {'steady winds' if wspd_std < 2 else 'variable wind speeds'}."
+        insights.append(wspd_insight)
+
+    # Display the generated insights in a single card
+    if insights:
+        insights_html = """
+            <div class="card">
+                <ul style="color:#252323;">
+        """
+        # Add each insight as a list item
+        for insight in insights:
+            insights_html += f"<li>{insight}</li>"
+
+        # Close the unordered list and the card
+        insights_html += """
+                </ul>
+            </div>
+        """
+
+        # Display the card in Streamlit
+        st.markdown(insights_html, unsafe_allow_html=True)
+
+
 def data_describe():
     # Display station info and raw data
     st.markdown('<div class="styled-subheader">Fetched Data</div>', unsafe_allow_html=True)
-
     # Explanation of fetched data
     st.markdown("""
                         <div class="card">
@@ -332,14 +404,14 @@ def main_data_and_describe():
 
 # plots header
 def plots_header():
-    st.markdown('<div class="styled-subheader">Line Plots for the 4 Key Points</div>',
+    st.markdown('<div class="styled-subheader">Line Plots</div>',
                 unsafe_allow_html=True)
 
-# Function to render data from NOAA API
-def render_API():
-    # NOAA Regions and Stations
-    # only a small portion of selected data from the API -> want to expand this data globally
-    regions_hierarchy = {
+
+@st.cache_resource
+def get_regions_hierarchy():
+    """Cached definition of regions and stations."""
+    return {
         "Atlantic (Tropical)": {
             "Cape Verde": {"id": "13001", "lat": 12.000, "lon": -23.000},
             "Martinique": {"id": "41040", "lat": 14.536, "lon": -53.136}
@@ -374,32 +446,63 @@ def render_API():
         }
     }
 
-    # Add "All Regions" option for all buoys
+
+@st.cache_data
+def fetch_station_data(station_id):
+    """Fetch station data and cache the result."""
+    headers = {"Accept-Encoding": "gzip"}
+    response = requests.get(API_URL.replace("<station_id>", station_id), headers=headers)
+    if response.status_code == 200:
+        data = response.text.splitlines()
+        columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD',
+                   'PRES', 'ATMP', 'WTMP', 'DEWP', 'VIS', 'PTDY', 'TIDE']
+        df = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
+        df = df.apply(pd.to_numeric, errors='coerce', axis=1)
+        return df
+    st.error("Failed to fetch data from NOAA API.")
+    return None
+
+# Function for the legend and what each means
+def legend_status():
+    # Define a legend with default Streamlit line chart colors
+    default_colors = {
+        "WTMP": "#ffb5c0",  # light pink
+        "APD": "#1f77b4",  # blue
+        "ATMP": "#8ec3e6",  # light blue
+        "WSPD": "#d62728"  # red
+    }
+
+    # Legend Information for the Line Chart
+    legend_html = """
+        <div class="card">
+            <h4 style="color:#005f73; font-weight: bold;">Legend</h4>
+            <ul style="color:#252323;">
+                <li><span style="color:{WTMP};"><b>Water Temperature (WTMP):</b></span> Monitors the temperature of the sea surface (°C).</li>
+                <li><span style="color:{APD};"><b>Average Wave Period (APD):</b></span> Average time between successive wave crests (seconds).</li>
+                <li><span style="color:{ATMP};"><b>Atmospheric Pressure (ATMP):</b></span> Current atmospheric pressure at the station (hPa).</li>
+                <li><span style="color:{WSPD};"><b>Wind Speed (WSPD):</b></span> Average wind speed measured at the station (m/s).</li>
+            </ul>
+        </div>
+    """.format(**default_colors)
+
+    st.markdown(legend_html, unsafe_allow_html=True)
+
+# Function to render data from NOAA API
+def render_API():
+    """Render NOAA data with selectable region and station."""
+    regions_hierarchy = get_regions_hierarchy()
     region_options = ["All Regions"] + list(regions_hierarchy.keys())
+
     selected_region = st.sidebar.selectbox("Select Region", region_options)
-
+    selected_station = None
     if selected_region != "All Regions":
-        station_options = list(regions_hierarchy[selected_region].keys())
-        selected_station = st.sidebar.selectbox("Select Station", station_options)
-    else:
-        selected_station = None
+        selected_station = st.sidebar.selectbox("Select Station", list(regions_hierarchy[selected_region].keys()))
 
-    # Fetch data if a station is selected
     if selected_station:
         station_id = regions_hierarchy[selected_region][selected_station]["id"]
-
         with st.spinner("Fetching data..."):
-            response = requests.get(API_URL.replace("<station_id>", station_id))
-            if response.status_code == 200:
-                data = response.text.splitlines()
-                columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD',
-                           'PRES', 'ATMP', 'WTMP', 'DEWP', 'VIS', 'PTDY', 'TIDE']
-
-                # Create DataFrame
-                df_api = pd.DataFrame([x.split() for x in data[2:] if x.strip() != ''], columns=columns)
-                df_api = df_api.apply(pd.to_numeric, errors='coerce', axis=1)  # Convert all data to numeric
-
-                # Extract the latest available data
+            df_api = fetch_station_data(station_id)
+            if df_api is not None:
                 current_data = {
                     "WTMP": df_api["WTMP"].iloc[-1] if "WTMP" in df_api.columns else "N/A",
                     "APD": df_api["APD"].iloc[-1] if "APD" in df_api.columns else "N/A",
@@ -407,41 +510,71 @@ def render_API():
                     "WSPD": df_api["WSPD"].iloc[-1] if "WSPD" in df_api.columns else "N/A",
                 }
 
-                # NOAA data description
-                info_marker()
+                st.markdown(f'<div class="hero-subtitle">Region: {selected_region} '
+                            f'<br> Station: {selected_station}</div>', unsafe_allow_html=True)
 
-                # Station Title
-                st.markdown(
-                    f'<div class="hero-subtitle">Region: {selected_region} <br> Station: {selected_station}</div>',
-                    unsafe_allow_html=True)
+                st.markdown('<div class="styled-subheader">Buoy Locations</div>',
+                            unsafe_allow_html=True)
+                display_buoy_map(regions_hierarchy, selected_region, selected_station, current_data)
 
-                # Fetched data
+                #Fetched data info
                 data_describe()
                 st.dataframe(df_api)
 
                 # Descriptive stats
-                stats_describe()
-                st.dataframe(df_api.describe())
+                stats_describe(df_api)
 
-                # Buoy Locations title
-                st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
-
-                # Display map with the selected station highlighted
-                display_buoy_map(regions_hierarchy, selected_region, selected_station, current_data)
-
+                # =========================================
                 # Environmental Observations Dashboard
+                # =========================================
                 main_data_and_describe()
 
-                # Interactive Charts button
-                plots_header()
-                st.line_chart(df_api[["WTMP", "APD", "ATMP", "WSPD"]])
-                # Download Button
-                download_data(df_api)
+                # =========================================
+                # Trends at this station in this region
+                # =========================================
 
-            else:
-                st.error("Failed to fetch data from the NOAA API.")
+                # Analyze key trends dynamically
+                wtmp_trend = 'rising' if df_api['WTMP'].diff().mean() > 0 else 'declining'
+                apd_trend = 'consistent' if df_api['APD'].std() < 1 else 'fluctuating significantly'
+                wspd_trend = 'stable' if df_api['WSPD'].std() < 2 else 'highly variable'
+                atmp_trend = 'steady' if df_api['ATMP'].std() < 1 else 'changing significantly'
+
+                # Display key trends observed
+                trends_html = f"""
+                <div class="card">
+                    <div class="styled-subheader"">Key Trends Observed for This Station</div>
+                    <ul>
+                        <li><b>Water Temperature:</b> The trend is <strong>{wtmp_trend}</strong> based on recent observations.</li>
+                        <li><b>Wave Periods:</b> They are <strong>{apd_trend}</strong> during the observed timeframe.</li>
+                        <li><b>Wind Speeds:</b> The conditions are <strong>{wspd_trend}</strong> over the analyzed period.</li>
+                        <li><b>Atmospheric Pressure:</b> The data indicates <strong>{atmp_trend}</strong> patterns.</li>
+                    </ul>
+                </div>
+                """
+                # output results into the card "container"
+                st.markdown(trends_html, unsafe_allow_html=True)
+
+                # =========================================
+                # Line Plots
+                # =========================================
+
+                st.line_chart(df_api[["WTMP", "APD", "ATMP", "WSPD"]])
+                legend_status()
+
+                st.download_button(
+                    label="Download Data as CSV",
+                    data=df_api.to_csv(index=False),
+                    file_name=f"{selected_station}_data.csv",
+                    mime="text/csv"
+                )
+
+                st.markdown(f"**Last Updated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S ETC')}")
     else:
-        # Display map with all buoys
+        # Banner
+        st.markdown('<div class="hero-title">Real-Time Data from NOAA</div>', unsafe_allow_html=True)
+        info_marker()
+        st.markdown('<div class="styled-subheader">Buoy Locations</div>', unsafe_allow_html=True)
+        st.info("Please select a region to view learn more.")
         display_buoy_map(regions_hierarchy)
 
 
