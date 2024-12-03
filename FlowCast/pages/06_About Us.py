@@ -236,7 +236,7 @@ st.markdown(
 )
 
 # Banner Title
-st.markdown('<div class="hero-title">Meet the FlowCast Team</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-title">Meet the Team</div>', unsafe_allow_html=True)
 
 # Tabs for each team member
 tabs = st.tabs(["Jesus Elespuru", "Angie Martinez", "Steven Luque", "Christopher Perez"])
