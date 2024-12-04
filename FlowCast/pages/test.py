@@ -1,13 +1,11 @@
 import streamlit as st
 
-st.title("Research Page")
-st.subheader("This page is for research and development")
+st.title("Streamlit App with Embedded Dash")
 
-# Displaying code using st.code
-st.code("""
-import streamlit as st
-
-st.title("Hello, Streamlit!")
-st.write("This is a code snippet.")
-""", language='python')
-
+# Embed Dash app (running on localhost:8050)
+st.markdown(
+    """
+    <iframe src="http://127.0.0.1:8050" width="100%" height="800" frameborder="0"></iframe>
+    """,
+    unsafe_allow_html=True
+)
