@@ -50,7 +50,7 @@ MAJORS = [
     "Web Development"
 ]
 
-st.set_page_config(page_title="FlowCast: Sign Up", layout="wide",
+st.set_page_config(page_title="Sign Up", layout="wide",
                    page_icon="🌊", initial_sidebar_state="expanded")
 
 # Custom CSS for consistent layout and spacing

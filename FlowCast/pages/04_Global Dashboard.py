@@ -10,7 +10,7 @@ from datetime import datetime
 
 API_URL = "https://www.ndbc.noaa.gov/data/realtime2/<station_id>.txt"
 
-st.set_page_config(page_title="FlowCast: NOAA Data", layout="wide", page_icon="🌊", initial_sidebar_state="expanded")
+st.set_page_config(page_title="API Retrievals", layout="wide", page_icon="🌊", initial_sidebar_state="expanded")
 
 # Custom CSS for consistent banner, optimized layout, and active sidebar highlighting
 st.markdown(

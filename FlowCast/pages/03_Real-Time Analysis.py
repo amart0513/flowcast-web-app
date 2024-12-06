@@ -9,7 +9,7 @@ import os
 import numpy as np
 
 # Page Configuration
-st.set_page_config(page_title="FlowCast: Combined Analysis", layout="wide", page_icon="🌊")
+st.set_page_config(page_title="Combined Analysis", layout="wide", page_icon="🌊")
 
 # Custom CSS for Styling
 st.markdown(
@@ -118,7 +118,7 @@ st.markdown(
 )
 
 # Banner Title
-st.markdown('<div class="hero-title">FlowCast: Combined Analysis</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-title">Combined Analysis</div>', unsafe_allow_html=True)
 
 # Dropdown for Navigation
 section = st.selectbox(
@@ -127,12 +127,14 @@ section = st.selectbox(
                                                                                              "and Comparative Analysis."
 )
 
+
 # Function for Data Analysis
 def data_analysis():
     st.markdown('<p class="styled-subheader">Data Analysis</p>', unsafe_allow_html=True)
 
     # Dataset Selection
-    dataset_toggle = st.radio("Choose Dataset", ["Default Dataset", "Upload Your Own"], help="Select a dataset to analyze.")
+    dataset_toggle = st.radio("Choose Dataset", ["Default Dataset", "Upload Your Own"],
+                              help="Select a dataset to analyze.")
     if dataset_toggle == "Upload Your Own":
         uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
         if uploaded_file:
@@ -142,7 +144,7 @@ def data_analysis():
             st.warning("Please upload a CSV file to proceed.")
             return
     else:
-        df = pd.read_csv("oct25-2024.csv")
+        df = pd.read_csv("data/oct25-2024.csv")
         st.info("Using the default dataset.")
 
     # Validate Data
@@ -216,7 +218,8 @@ def data_analysis():
     with threeD_Plots_tab:
         st.markdown('<p class="styled-subheader">3D Plot</p>', unsafe_allow_html=True)
         fig = px.scatter_3d(
-            df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L", color_continuous_scale=px.colors.sequential.ice
+            df, x="Longitude", y="Latitude", z="Depth m", color="ODO mg/L",
+            color_continuous_scale=px.colors.sequential.ice
         )
         st.plotly_chart(fig)
 
@@ -244,63 +247,112 @@ def predictive_analysis():
     # Function to Predict Water Quality
     def predict_water_quality(df):
         st.markdown('<p class="styled-subheader">Model Predictions</p>', unsafe_allow_html=True)
+        st.write("""
+        **Explanation**: Displayed below are the predicted and actual values for the water quality metrics: `Depth m`, `Temp °C`, 
+        `pH`, and `ODO mg/L`. This comparison provides insights into the model's prediction accuracy.
+        """)
 
         # Select relevant features for prediction
-        features = df[['Depth m', 'Temp °C', 'pH', 'ODO mg/L']]
-        st.write("**Features used for prediction**: Depth (m), Temperature (°C), pH Levels, and ODO (mg/L)")
-        st.dataframe(features.head())
+        features = ['Latitude', 'Longitude', 'Depth m', 'Temp °C', 'pH', 'ODO mg/L']
+        target_columns = ['Depth m', 'Temp °C', 'pH', 'ODO mg/L']
 
-        # Check if model exists
-        model_file = 'data.pkl'
+        if not all(col in df.columns for col in features):
+            st.error(
+                "The dataset must contain the following columns: Latitude, Longitude, Depth m, Temp °C, pH, ODO mg/L.")
+            return
+
+        X = df[features]
+
+        # Load the multi-output model
+        model_file = 'models/multi_output_model.pkl'
         if os.path.exists(model_file):
+            from joblib import load
             model = load(model_file)
 
             # Make predictions
-            predictions = model.predict(features)
-
-            # Display predictions
-            st.markdown('<p class="styled-subheader">Predicted Dissolved Oxygen (ODO mg/L)</p>', unsafe_allow_html=True)
+            predictions = model.predict(X)
             prediction_df = df.copy()
-            prediction_df['Predicted ODO mg/L'] = predictions
-            st.dataframe(prediction_df[['Depth m', 'Temp °C', 'pH', 'Predicted ODO mg/L']])
+            for i, col in enumerate(target_columns):
+                prediction_df[f'Predicted {col}'] = predictions[:, i]
 
-            # Actual vs Predicted Analysis
-            if 'ODO mg/L' in df.columns:
-                true_values = df['ODO mg/L']
-                mse = mean_squared_error(true_values, predictions)
-                st.write(f"**Mean Squared Error (MSE):** {mse}")
+            st.markdown('<p class="styled-subheader">Predicted Values for All Variables</p>', unsafe_allow_html=True)
+            st.dataframe(prediction_df[features + [f'Predicted {col}' for col in target_columns]])
+
+            st.write("""
+            **Explanation**: This table shows the input features and model-predicted values for all four target variables: 
+            `Depth m`, `Temp °C`, `pH`, and `ODO mg/L`. Compare these predictions with the actual values to evaluate accuracy.
+            """)
+
+            # Visualize Predictions for Each Variable
+            for actual_col in target_columns:
+                predicted_col = f'Predicted {actual_col}'
+                st.markdown(f'<p class="styled-subheader">Actual vs Predicted {actual_col}</p>', unsafe_allow_html=True)
 
                 # Scatter Plot
-                st.markdown('<p class="styled-subheader">Actual vs Predicted Dissolved Oxygen (ODO mg/L)</p>', unsafe_allow_html=True)
-                plt.figure(figsize=(10, 6))
-                plt.scatter(true_values, predictions, alpha=0.6)
-                plt.plot([true_values.min(), true_values.max()], [true_values.min(), true_values.max()], 'r--', lw=2)
-                plt.xlabel("Actual ODO mg/L")
-                plt.ylabel("Predicted ODO mg/L")
-                plt.title("Scatter Plot of Actual vs Predicted ODO")
-                st.pyplot(plt)
-                plt.clf()
+                scatter_fig = px.scatter(
+                    x=prediction_df[actual_col],
+                    y=prediction_df[predicted_col],
+                    labels={"x": f"Actual {actual_col}", "y": f"Predicted {actual_col}"},
+                    title=f"Actual vs Predicted {actual_col}",
+                    template="plotly_white",
+                )
+                scatter_fig.add_shape(
+                    type="line",
+                    x0=prediction_df[actual_col].min(), y0=prediction_df[actual_col].min(),
+                    x1=prediction_df[actual_col].max(), y1=prediction_df[actual_col].max(),
+                    line=dict(color="Red", dash="dash"),
+                )
+                st.plotly_chart(scatter_fig, use_container_width=True)
 
-                # Error Distribution
-                st.markdown('<p class="styled-subheader">Error Distribution</p>', unsafe_allow_html=True)
-                errors = true_values - predictions
-                plt.figure(figsize=(10, 6))
-                sns.histplot(errors, bins=30, kde=True)
-                plt.xlabel("Prediction Error (Actual - Predicted ODO mg/L)")
-                plt.title("Error Distribution of Predictions")
-                st.pyplot(plt)
-                plt.clf()
+                st.write(f"""
+                **Explanation**: This scatter plot compares the actual vs. predicted values for `{actual_col}`. Points closer 
+                to the red dashed line indicate better predictions, while points far from the line represent higher errors.
+                """)
 
-                # Line Plot
-                st.markdown('<p class="styled-subheader">Line Plot of Actual and Predicted ODO over Index</p>', unsafe_allow_html=True)
-                plt.figure(figsize=(10, 6))
-                plt.plot(prediction_df.index, true_values, label='Actual ODO mg/L', color='blue')
-                plt.plot(prediction_df.index, predictions, label='Predicted ODO mg/L', color='orange', linestyle='--')
-                plt.xlabel("Index")
-                plt.ylabel("ODO mg/L")
-                plt.title("Line Plot of Actual vs Predicted ODO")
-                plt.legend()
-                st.pyplot(plt)
+            # Fish Kill Risk Trends
+            st.markdown('<p class="styled-subheader">Fish Kill Risk Trends</p>', unsafe_allow_html=True)
+
+            # Identify critical thresholds for risks
+            low_odo_count = prediction_df[prediction_df['Predicted ODO mg/L'] < 4].shape[0]
+            high_temp_count = prediction_df[prediction_df['Predicted Temp °C'] > 30].shape[0]
+            low_ph_count = prediction_df[prediction_df['Predicted pH'] < 6.5].shape[0]
+
+            st.write(f"🔴 **Low Dissolved Oxygen (< 4 mg/L)**: {low_odo_count} zones")
+            st.write(f"🔴 **High Temperature (> 30 °C)**: {high_temp_count} zones")
+            st.write(f"🔴 **Low pH (< 6.5)**: {low_ph_count} zones")
+
+            st.write("""
+            **Explanation**: These trends highlight how many zones have critical water quality conditions that pose a risk to fish. 
+            Low dissolved oxygen is the primary driver of fish kills, while high temperatures and low pH exacerbate stress and mortality.
+            """)
+
+            # Map Risk Zones
+            st.markdown('<p class="styled-subheader">Fish Kill Risk Zones</p>', unsafe_allow_html=True)
+            st.write("""
+                            **Explanation**: This map highlights zones where water quality conditions meet critical thresholds for fish kills. 
+                            Redder areas indicate greater risk based on low dissolved oxygen levels.
+                            """)
+            risk_zones = prediction_df[
+                (prediction_df['Predicted ODO mg/L'] < 4) |
+                (prediction_df['Predicted Temp °C'] > 30) |
+                (prediction_df['Predicted pH'] < 6.5)
+                ]
+            if not risk_zones.empty:
+                risk_fig = px.scatter_mapbox(
+                    risk_zones,
+                    lat="Latitude", lon="Longitude",
+                    color="Predicted ODO mg/L",
+                    size="Predicted Temp °C",
+                    hover_data=["Predicted Depth m", "Predicted pH", "Predicted Temp °C"],
+                    color_continuous_scale="reds",
+                    mapbox_style="carto-positron",
+                    zoom=8,
+                    title="Prone Areas to Potential Fish Kills"
+                )
+                st.plotly_chart(risk_fig, use_container_width=True)
+            else:
+                st.success("✅ No zones were found with conditions likely to cause fish kills.")
+
         else:
             st.error(f"Model file {model_file} not found. Train the model first.")
 
@@ -310,11 +362,12 @@ def predictive_analysis():
 
         # Select relevant features for prediction
         features = df[['Depth m', 'Temp °C', 'pH', 'ODO mg/L']]
-        st.write("**Features used for prediction**: Depth (m), Temperature (°C), pH Levels, and Dissolved Oxygen (ODO mg/L)")
+        st.write(
+            "**Features used for prediction**: Depth (m), Temperature (°C), pH Levels, and Dissolved Oxygen (ODO mg/L)")
         st.dataframe(features.head())
 
         # Check if model exists
-        model_file = 'data.pkl'
+        model_file = 'models/data.pkl'
         if os.path.exists(model_file):
             model = load(model_file)
 
@@ -363,7 +416,8 @@ def predictive_analysis():
     option = st.selectbox("Choose Analysis Type", ["Water Quality Prediction", "Fish Kill Risk Assessment"])
 
     # Main Section for Predictive Analysis
-    data_toggle = st.radio("Select Data Source", ["Upload CSV File", "Use Preloaded Dummy Data"], help="Choose how to provide data for predictions.")
+    data_toggle = st.radio("Select Data Source", ["Upload CSV File", "Use Preloaded Dummy Data"],
+                           help="Choose how to provide data for predictions.")
 
     if data_toggle == "Upload CSV File":
         uploaded_file = st.file_uploader("Upload a CSV file for prediction", type=["csv"])
@@ -388,7 +442,8 @@ def predictive_analysis():
 
 # Function for Comparative Analysis
 def comparative_analysis():
-    st.markdown('<p class="styled-subheader">Comparative Analysis: March 2024 - October 2024</p>', unsafe_allow_html=True)
+    st.markdown('<p class="styled-subheader">Comparative Analysis: March 2024 - October 2024</p>',
+                unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -529,7 +584,7 @@ def comparative_analysis():
     st.write(
         "This heatmap visualizes the correlations between the three key water quality parameters for the selected "
         "month."
-        "Positive correlations (closer to 1) indicate that two parameters tend to increase together, while negative "
+        " Positive correlations (closer to 1) indicate that two parameters tend to increase together, while negative "
         "correlations (closer to -1) suggest an inverse relationship."
     )
     st.write(
@@ -539,11 +594,24 @@ def comparative_analysis():
     )
 
     corr = month_data[available_columns].corr()
-    fig, ax = plt.subplots(figsize=(10, 8))
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
-    plt.title(f"Correlation Between Parameters in {selected_month}")
-    st.pyplot(fig)
-    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Use Plotly for an interactive, scalable heatmap
+    fig = px.imshow(
+        corr,
+        text_auto=".2f",
+        color_continuous_scale="icefire",
+        labels={"color": "Correlation"},
+        title=f"Correlation Between Parameters in {selected_month}",
+    )
+
+    # Adjust layout for better scalability
+    fig.update_layout(
+        autosize=True,
+        margin=dict(l=10, r=10, t=40, b=10),
+        font=dict(size=10),
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
 
     # Boxplots for Key Parameters
     st.markdown('<h3 class="styled-subheader">Boxplots for Distribution Analysis</h3>', unsafe_allow_html=True)

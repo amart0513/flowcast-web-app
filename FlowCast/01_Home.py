@@ -7,7 +7,7 @@ IMAGE3 = "media/group-pic.jpeg"
 
 # Page configuration
 st.set_page_config(
-    page_title="FlowCast",
+    page_title="Home",
     layout="wide",
     page_icon="🌊",
     initial_sidebar_state="auto",
@@ -188,7 +188,7 @@ st.markdown(
 st.markdown(
     """
     <div class="hero-section">
-        <h1 class="hero-title">Welcome to FlowCast</h1>
+        <h1 class="hero-title">Welcome to FlowCast!</h1>
         <p class="hero-subtitle">
             Real-time water quality insights powered by advanced machine learning.
         </p>

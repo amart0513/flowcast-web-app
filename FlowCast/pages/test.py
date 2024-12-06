@@ -68,7 +68,7 @@ st.markdown(
 )
 
 # Hero Section
-st.markdown('<h1 class="hero-title">FlowCast Resource Page</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="hero-title">Resource Page</h1>', unsafe_allow_html=True)
 
 # Section Header
 st.markdown('<h2 class="section-header">Harmful Conditions and Mitigation Strategies</h2>', unsafe_allow_html=True)
