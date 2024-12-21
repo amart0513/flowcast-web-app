@@ -257,6 +257,7 @@ def render_background():
     col1, col2 = st.columns(2)
 
     with col1:
+        # markdown 1
         st.markdown(
             """
             <div class="card">
@@ -297,6 +298,91 @@ def render_background():
             """,
             unsafe_allow_html=True,
         )
+
+        # markdown 2
+        st.markdown(
+            """
+            <div class="card">
+                <p>
+                Our project leverages <b>advanced machine learning techniques</b> to monitor and predict water quality in real-time, 
+                with a focus on <b>Biscayne Bay</b> and <b>Haulover Beach</b>. By tailoring models to these unique environments, 
+                we developed a robust system that provides actionable insights into aquatic conditions, benefiting both marine ecosystems 
+                and public health.
+                </p>
+                <ul>
+                    <li>
+                        <b>Location-Specific Dataset Integration:</b>  
+                        - Curated datasets uniquely relevant to Biscayne Bay and Haulover Beach, accounting for local environmental factors.  
+                        - This approach significantly improved predictive accuracy compared to generic models.
+                    </li>
+                    <li>
+                        <b>Machine Learning Models for Forecasting:</b>  
+                        - Trained models capable of detecting trends and anomalies in water quality metrics using Python libraries like 
+                          Scikit-learn and TensorFlow.  
+                        - Predictive capabilities allow stakeholders to respond proactively to potential threats such as <i>fish kills</i> or 
+                          <i>pollution spikes</i>.
+                    </li>
+                    <li>
+                        <b>Real-Time Data Integration:</b>  
+                        - Fetches live environmental data from APIs like NOAA, ensuring up-to-date analysis.  
+                        - Real-time updates visualized through interactive dashboards built with <b>Streamlit</b>.
+                    </li>
+                </ul>
+                <p>
+                By automating the data collection from the EXO2 sonde and providing a web interface for viewing both real-time and historical 
+                data, the system reduces manual effort, improves data accuracy, and enhances accessibility for researchers, technicians, or 
+                anyone involved in water quality monitoring. The project’s goal is to create a scalable solution that can be adapted for various 
+                environmental and scientific applications, promoting more efficient and informed decision-making in water quality management.
+                This Python-driven initiative not only underscores the potential of technology in environmental protection but also sets 
+                a precedent for how location-specific data can redefine the scope and efficacy of predictive analytics.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # markdown 3
+        st.markdown(
+            """
+            <div class="card">
+                <p>
+                Our project leverages <b>advanced machine learning techniques</b> to monitor and predict water quality in real-time, 
+                with a focus on <b>Biscayne Bay</b> and <b>Haulover Beach</b>. By tailoring models to these unique environments, 
+                we developed a robust system that provides actionable insights into aquatic conditions, benefiting both marine ecosystems 
+                and public health.
+                </p>
+                <ul>
+                    <li>
+                        <b>Location-Specific Dataset Integration:</b>  
+                        - Curated datasets uniquely relevant to Biscayne Bay and Haulover Beach, accounting for local environmental factors.  
+                        - This approach significantly improved predictive accuracy compared to generic models.
+                    </li>
+                    <li>
+                        <b>Machine Learning Models for Forecasting:</b>  
+                        - Trained models capable of detecting trends and anomalies in water quality metrics using Python libraries like 
+                          Scikit-learn and TensorFlow.  
+                        - Predictive capabilities allow stakeholders to respond proactively to potential threats such as <i>fish kills</i> or 
+                          <i>pollution spikes</i>.
+                    </li>
+                    <li>
+                        <b>Real-Time Data Integration:</b>  
+                        - Fetches live environmental data from APIs like NOAA, ensuring up-to-date analysis.  
+                        - Real-time updates visualized through interactive dashboards built with <b>Streamlit</b>.
+                    </li>
+                </ul>
+                <p>
+                By automating the data collection from the EXO2 sonde and providing a web interface for viewing both real-time and historical 
+                data, the system reduces manual effort, improves data accuracy, and enhances accessibility for researchers, technicians, or 
+                anyone involved in water quality monitoring. The project’s goal is to create a scalable solution that can be adapted for various 
+                environmental and scientific applications, promoting more efficient and informed decision-making in water quality management.
+                This Python-driven initiative not only underscores the potential of technology in environmental protection but also sets 
+                a precedent for how location-specific data can redefine the scope and efficacy of predictive analytics.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
 
     with col2:
         st.image(IMAGE3, caption="The Heron collecting data nearby Haulover Beach, FL.", use_container_width=True)
